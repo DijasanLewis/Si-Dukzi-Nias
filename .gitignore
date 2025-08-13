@@ -19,6 +19,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+/app/prismatic-sunup-468904-s3-0dc16aa431a6.json
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
