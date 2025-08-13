@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -59,3 +60,7 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+=======
+# Si-Dukzi-Nias
+SI-DUKZI adalah aplikasi berbasis web yang dirancang khusus untuk menjadi pusat kendali dalam proses pengumpulan, pengelolaan, dan pemantauan bukti dukung ZI di lingkungan BPS Kabupaten Nias
+>>>>>>> 0f8eb0e36389bef89dde092a2218cb01c17d2464
