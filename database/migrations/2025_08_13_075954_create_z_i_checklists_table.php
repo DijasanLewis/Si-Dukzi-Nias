@@ -9,12 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('z_i_checklists', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+    public function up(): void{
+        Schema::create('zi_checklists', function (Blueprint $table) { 
+            $table->id();        
+            $table->string('area_perubahan');        
+            $table->text('poin_penilaian');        
+            $table->string('google_drive_folder_id')->nullable();        
+            $table->enum('status', ['Kosong', 'Terisi'])->default('Kosong');        
+            $table->timestamps();        
+        });        
     }
 
     /**
