@@ -10,7 +10,7 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void{
-        Schema::create('zi_checklists', function (Blueprint $table) { 
+        Schema::create('z_i_checklists', function (Blueprint $table) { 
             $table->id();        
             $table->string('area_perubahan');        
             $table->text('poin_penilaian');        
