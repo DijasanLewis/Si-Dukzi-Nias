@@ -9,15 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void{
-        Schema::create('z_i_checklists', function (Blueprint $table) { 
-            $table->id();        
-            $table->string('area_perubahan');        
-            $table->text('poin_penilaian');        
-            $table->string('google_drive_folder_id')->nullable();        
-            $table->enum('status', ['Kosong', 'Terisi'])->default('Kosong');        
-            $table->timestamps();        
-        });        
+    public function up(): void
+    {
+        Schema::create('z_i_checklists', function (Blueprint $table) {
+            $table->id();
+            $table->string('aspek');
+            $table->string('area');
+            $table->string('pilar');
+            $table->string('sub_pilar')->nullable();
+            $table->text('pertanyaan'); // Kolom yang dibutuhkan
+            $table->string('google_drive_folder_id')->nullable();
+            $table->enum('status', ['Kosong', 'Terisi'])->default('Kosong');
+            $table->timestamps();
+        });
     }
 
     /**

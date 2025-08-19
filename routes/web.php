@@ -12,3 +12,5 @@ use App\Http\Controllers\ZIController;
 Route::get('/', [ZIController::class, 'index'])->name('zi.index');
 // Route untuk sinkronisasi manual
 Route::get('/sync', [ZIController::class, 'syncStatus'])->name('zi.sync');
+
+Route::get('/migrate-drive', [ZIController::class, 'migrateDriveStructure']);

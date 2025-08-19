@@ -9,14 +9,20 @@ class ZIChecklist extends Model
 {
     use HasFactory;
 
+    // Ganti nama tabel jika tidak sesuai standar Laravel (opsional, tapi disarankan)
+    protected $table = 'z_i_checklists';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'area_perubahan',
-        'poin_penilaian',
+        'aspek',
+        'area',
+        'pilar',
+        'sub_pilar',
+        'pertanyaan', // Izinkan kolom ini diisi
         'google_drive_folder_id',
         'status',
     ];
