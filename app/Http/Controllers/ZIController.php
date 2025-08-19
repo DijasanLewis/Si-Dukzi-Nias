@@ -15,170 +15,562 @@ class ZIController extends Controller
     {
         $client = new Client();
         // Pastikan path ke file JSON Anda benar
-        $client->setAuthConfig(storage_path('app/prismatic-sunup-468904-s3-0dc16aa431a6.json'));
+        $client->setAuthConfig(storage_path('app/si-dukzi-bps-nias-bcdb9900169c.json'));
         $client->addScope(Drive::DRIVE);
         $this->drive = new Drive($client);
     }
 
+    /**
+     * Menampilkan halaman utama.
+     * (View perlu disesuaikan nanti untuk menampilkan data dari database baru)
+     */
     public function index()
     {
-        // Jika tabel kosong, inisiasi data awal
-        if (ZIChecklist::count() == 0) {
-            $this->initiateData();
-        }
-
-        $checklists = ZIChecklist::all();
+        // Mengambil data dan mengelompokkannya untuk tampilan yang lebih terstruktur
+        $checklists = ZIChecklist::orderBy('id')->get()->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']);
         return view('zi_index', compact('checklists'));
     }
 
-    private function initiateData()
+    /**
+     * Fungsi utama untuk migrasi dan sinkronisasi struktur folder.
+     */
+    public function migrateDriveStructure()
     {
-        // Ganti dengan folder ID utama Anda dari Langkah 2
-        $parentFolderId = '16EctshwCuM-lNssaFsSt4fDiaskq18h_'; 
+        // GANTI INI dengan ID folder utama di Google Drive BPS Kab. Nias
+        $parentFolderId = '1d4KZVTIRkHgZdstKoCvtS843pjgsTe0p'; 
 
-        // Ini adalah data dummy, ganti dengan data ZI yang sebenarnya
         $ziData = [
-            // 1. Manajemen Perubahan
-            ['area' => 'Manajemen Perubahan', 'poin' => '1a. Penyusunan Tim Kerja - Pembentukan Tim'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '1b. Penyusunan Tim Kerja - Penentuan Anggota'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '2a. Rencana Pembangunan ZI - Dokumen Rencana Kerja'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '2b. Rencana Pembangunan ZI - Target Prioritas Relevan'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '2c. Rencana Pembangunan ZI - Sosialisasi'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '3a. Pemantauan & Evaluasi - Pelaksanaan Sesuai Rencana'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '3b. Pemantauan & Evaluasi - Monitoring Berkala'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '3c. Pemantauan & Evaluasi - Tindak Lanjut Hasil'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '4a. Perubahan Pola Pikir - Pimpinan Sebagai Role Model'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '4b. Perubahan Pola Pikir - Penetapan Agen Perubahan'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '4c. Perubahan Pola Pikir - Pembangunan Budaya Kerja'],
-            ['area' => 'Manajemen Perubahan', 'poin' => '4d. Perubahan Pola Pikir - Keterlibatan Anggota'],
-        
-            // 2. Penataan Tatalaksana
-            ['area' => 'Penataan Tatalaksana', 'poin' => '1a. SOP - Mengacu Peta Proses Bisnis'],
-            ['area' => 'Penataan Tatalaksana', 'poin' => '1b. SOP - Penerapan SOP'],
-            ['area' => 'Penataan Tatalaksana', 'poin' => '1c. SOP - Evaluasi SOP'],
-            ['area' => 'Penataan Tatalaksana', 'poin' => '2a. SPBE - Pengukuran Kinerja via TI'],
-            ['area' => 'Penataan Tatalaksana', 'poin' => '2b. SPBE - Manajemen SDM via TI'],
-            ['area' => 'Penataan Tatalaksana', 'poin' => '2c. SPBE - Pelayanan Publik via TI'],
-            ['area' => 'Penataan Tatalaksana', 'poin' => '2d. SPBE - Monitoring Pemanfaatan TI'],
-            ['area' => 'Penataan Tatalaksana', 'poin' => '3a. Keterbukaan Informasi Publik - Penerapan Kebijakan'],
-            ['area' => 'Penataan Tatalaksana', 'poin' => '3b. Keterbukaan Informasi Publik - Monitoring & Evaluasi'],
-        
-            // 3. Penataan Sistem Manajemen SDM
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '1a. Perencanaan Kebutuhan Pegawai - Acuan Peta Jabatan & ABK'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '1b. Perencanaan Kebutuhan Pegawai - Penempatan Sesuai Kebutuhan'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '1c. Perencanaan Kebutuhan Pegawai - Monev Penempatan'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '2a. Pola Mutasi Internal - Mutasi Antar Jabatan'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '2b. Pola Mutasi Internal - Mutasi Sesuai Kompetensi'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '2c. Pola Mutasi Internal - Monev Mutasi'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '3a. Pengembangan Pegawai - Training Need Analysis'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '3b. Pengembangan Pegawai - Rencana Pengembangan'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '3c. Pengembangan Pegawai - Kesenjangan Kompetensi'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '3d. Pengembangan Pegawai - Hak Mengikuti Diklat'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '3e. Pengembangan Pegawai - Upaya Pengembangan'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '3f. Pengembangan Pegawai - Monev Hasil Pengembangan'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '4a. Penetapan Kinerja Individu - Kinerja Terkait Organisasi'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '4b. Penetapan Kinerja Individu - Ukuran Kinerja Sesuai Level'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '4c. Penetapan Kinerja Individu - Pengukuran Periodik'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '4d. Penetapan Kinerja Individu - Dasar Pemberian Reward'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '5a. Penegakan Aturan Disiplin - Implementasi Aturan'],
-            ['area' => 'Penataan Sistem Manajemen SDM', 'poin' => '6a. Sistem Informasi Kepegawaian - Pemutakhiran Data'],
-        
-            // 4. Penguatan Akuntabilitas
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '1a. Keterlibatan Pimpinan - Penyusunan Perencanaan'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '1b. Keterlibatan Pimpinan - Penyusunan Penetapan Kinerja'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '1c. Keterlibatan Pimpinan - Pemantauan Pencapaian Kinerja'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '2a. Pengelolaan Akuntabilitas Kinerja - Dokumen Perencanaan'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '2b. Pengelolaan Akuntabilitas Kinerja - Perencanaan Berorientasi Hasil'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '2c. Pengelolaan Akuntabilitas Kinerja - Penetapan IKU'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '2d. Pengelolaan Akuntabilitas Kinerja - Indikator Kriteria SMART'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '2e. Pengelolaan Akuntabilitas Kinerja - Laporan Kinerja Tepat Waktu'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '2f. Pengelolaan Akuntabilitas Kinerja - Laporan Kinerja Informatif'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '2g. Pengelolaan Akuntabilitas Kinerja - Sistem Informasi Kinerja'],
-            ['area' => 'Penguatan Akuntabilitas', 'poin' => '2h. Pengelolaan Akuntabilitas Kinerja - Peningkatan Kapasitas SDM'],
-        
-            // 5. Penguatan Pengawasan
-            ['area' => 'Penguatan Pengawasan', 'poin' => '1a. Pengendalian Gratifikasi - Public Campaign'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '1b. Pengendalian Gratifikasi - Implementasi'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '2a. Penerapan SPIP - Pembangunan Lingkungan Pengendalian'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '2b. Penerapan SPIP - Penilaian Risiko'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '2c. Penerapan SPIP - Kegiatan Pengendalian Risiko'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '2d. Penerapan SPIP - Sosialisasi SPI'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '3a. Pengaduan Masyarakat - Implementasi Kebijakan'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '3b. Pengaduan Masyarakat - Tindak Lanjut Pengaduan'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '3c. Pengaduan Masyarakat - Monev Penanganan'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '3d. Pengaduan Masyarakat - Tindak Lanjut Hasil Evaluasi'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '4a. Whistle Blowing System (WBS) - Penerapan WBS'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '4b. Whistle Blowing System (WBS) - Evaluasi Penerapan'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '4c. Whistle Blowing System (WBS) - Tindak Lanjut Hasil Evaluasi'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '5a. Penanganan Benturan Kepentingan - Pemetaan'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '5b. Penanganan Benturan Kepentingan - Sosialisasi'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '5c. Penanganan Benturan Kepentingan - Implementasi'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '5d. Penanganan Benturan Kepentingan - Evaluasi'],
-            ['area' => 'Penguatan Pengawasan', 'poin' => '5e. Penanganan Benturan Kepentingan - Tindak Lanjut Hasil Evaluasi'],
-        
-            // 6. Peningkatan Kualitas Pelayanan Publik
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '1a. Standar Pelayanan - Kebijakan Standar Pelayanan'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '1b. Standar Pelayanan - Maklumat Pelayanan'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '1c. Standar Pelayanan - Reviu & Perbaikan'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '1d. Standar Pelayanan - Publikasi'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '2a. Budaya Pelayanan Prima - Peningkatan Kemampuan'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '2b. Budaya Pelayanan Prima - Akses Informasi Pelayanan'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '2c. Budaya Pelayanan Prima - Sistem Reward & Sanksi'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '2d. Budaya Pelayanan Prima - Sistem Kompensasi'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '2e. Budaya Pelayanan Prima - Sarana Layanan Terpadu'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '2f. Budaya Pelayanan Prima - Inovasi Pelayanan'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '3a. Pengelolaan Pengaduan - Media Terintegrasi SP4N-Lapor!'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '3b. Pengelolaan Pengaduan - Unit Pengelola'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '3c. Pengelolaan Pengaduan - Evaluasi Penanganan'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '4a. Penilaian Kepuasan - Pelaksanaan Survei'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '4b. Penilaian Kepuasan - Akses Hasil Survei'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '4c. Penilaian Kepuasan - Tindak Lanjut Hasil Survei'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '5a. Pemanfaatan TI - Penerapan TI'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '5b. Pemanfaatan TI - Database Terintegrasi'],
-            ['area' => 'Peningkatan Kualitas Pelayanan Publik', 'poin' => '5c. Pemanfaatan TI - Perbaikan Berkelanjutan'],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'i. Penyusunan Tim Kerja',
+                'pertanyaan' => 'a. Unit Kerja Telah Membentuk Tim Untuk Melakukan Pembangunan Zona Integritas',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'i. Penyusunan Tim Kerja',
+                'pertanyaan' => 'b. Penentuan Anggota Tim Dipilih Melalui Prosedur/mekanisme Yang Jelas',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'ii. Rencana Pembangunan Zona Integritas',
+                'pertanyaan' => 'a. Terdapat Dokumen Rencana Kerja Pembangunan Zona Integritas Menuju Wbk/wbbm',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'ii. Rencana Pembangunan Zona Integritas',
+                'pertanyaan' => 'b. Dalam Dokumen Pembangunan Terdapat Target-target Prioritas Yang Relevan Dengan Tujuan Pembangunan Wbk/wbbm',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'ii. Rencana Pembangunan Zona Integritas',
+                'pertanyaan' => 'c. Terdapat Mekanisme Atau Media Untuk Mensosialisasikan Pembangunan Wbk/wbbm',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'iii. Pemantauan Dan Evaluasi Pembangunan Wbk/wbbm',
+                'pertanyaan' => 'a. Seluruh Kegiatan Pembangunan Sudah Dilaksanakan Sesuai Dengan Rencana',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'iii. Pemantauan Dan Evaluasi Pembangunan Wbk/wbbm',
+                'pertanyaan' => 'b. Terdapat Monitoring Dan Evaluasi Terhadap Pembangunan Zona Integritas',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'iii. Pemantauan Dan Evaluasi Pembangunan Wbk/wbbm',
+                'pertanyaan' => 'c. Hasil Monitoring Dan Evaluasi Telah Ditindaklanjuti',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'iv. Perubahan Pola Pikir Dan Budaya Kerja',
+                'pertanyaan' => 'a. Pimpinan Berperan Sebagai Role Model Dalam Pelaksanaan Pembangunan Wbk/wbbm',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'iv. Perubahan Pola Pikir Dan Budaya Kerja',
+                'pertanyaan' => 'b. Sudah Ditetapkan Agen Perubahan',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'iv. Perubahan Pola Pikir Dan Budaya Kerja',
+                'pertanyaan' => 'c. Telah Dibangun Budaya Kerja Dan Pola Pikir Di Lingkungan Organisasi',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '1. Manajemen Perubahan',
+                'subpilar' => 'iv. Perubahan Pola Pikir Dan Budaya Kerja',
+                'pertanyaan' => 'd. Anggota Organisasi Terlibat Dalam Pembangunan Zona Integritas Menuju Wbk/wbbm',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '2. Penataan Tatalaksana',
+                'subpilar' => 'i. Prosedur Operasional Tetap (sop) Kegiatan Utama',
+                'pertanyaan' => 'a. Sop Mengacu Pada Peta Proses Bisnis Instansi',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '2. Penataan Tatalaksana',
+                'subpilar' => 'i. Prosedur Operasional Tetap (sop) Kegiatan Utama',
+                'pertanyaan' => 'b. Prosedur Operasional Tetap (sop) Telah Diterapkan',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '2. Penataan Tatalaksana',
+                'subpilar' => 'i. Prosedur Operasional Tetap (sop) Kegiatan Utama',
+                'pertanyaan' => 'c. Prosedur Operasional Tetap (sop) Telah Dievaluasi',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '2. Penataan Tatalaksana',
+                'subpilar' => 'ii. E-office',
+                'pertanyaan' => 'a. "telah Membangun Lingkungan Kerja Berbasis Teknologi Informasi (e-office) Pada Level:"',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '2. Penataan Tatalaksana',
+                'subpilar' => 'ii. E-office',
+                'pertanyaan' => 'b. "telah Dilakukan Monitoring Dan Evaluasi Terhadap Pemanfaatan Teknologi Informasi Dalam Pengukuran Kinerja Unit, Operasionalisasi Sdn, Dan Pemberian Layanan Kepada Publik"',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '2. Penataan Tatalaksana',
+                'subpilar' => 'iii. Keterbukaan Informasi Publik',
+                'pertanyaan' => 'a. Membuat Kebijakan Tentang Keterbukaan Informasi Publik',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '2. Penataan Tatalaksana',
+                'subpilar' => 'iii. Keterbukaan Informasi Publik',
+                'pertanyaan' => 'b. Melakukan Monitoring Dan Evaluasi Pelaksanaan Kebijakan Keterbukaan Informasi Publik',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'i. Perencanaan Kebutuhan Pegawai',
+                'pertanyaan' => 'a. Kebutuhan Pegawai Yang Disusun Mengacu Kepada Peta Jabatan Dan Hasil Analisis Beban Kerja Untuk Masing-masing Jabatan',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'i. Perencanaan Kebutuhan Pegawai',
+                'pertanyaan' => 'b. Penempatan Pegawai Hasil Rekrutmen Murni Mengacu Kepada Kebutuhan Pegawai Yang Telah Disusun Per Jabatan',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'i. Perencanaan Kebutuhan Pegawai',
+                'pertanyaan' => 'c. Telah Dilakukan Monitoring Dan Evaluasi Terhadap Penempatan Pegawai Rekrutmen',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'ii. Pola Mutasi Internal',
+                'pertanyaan' => 'a. Dalam Melakukan Pengembangan Karier Pegawai, Telah Mempertimbangkan Kebutuhan Organisasi Serta Kompetensi Dan Kualifikasi Pegawai',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'ii. Pola Mutasi Internal',
+                'pertanyaan' => 'b. Dalam Melakukan Mutasi Pegawai Antar Jabatan, Telah Memperhatikan Kompetensi Jabatan Dan Mengikuti Pola Mutasi Yang Telah Ditetapkan',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'ii. Pola Mutasi Internal',
+                'pertanyaan' => 'c. Telah Dilakukan Monitoring Dan Evaluasi Terhadap Kegiatan Mutasi Yang Dilakukan Dalam Kaitannya Dengan Perbaikan Kinerja',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iii. Pengembangan Pegawai Berbasis Kompetensi',
+                'pertanyaan' => 'a. Unit Kerja Melakukan Training Need Analysis Untuk Pengembangan Kompetensi Staf',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iii. Pengembangan Pegawai Berbasis Kompetensi',
+                'pertanyaan' => 'b. Dalam Menyusun Rencana Pengembangan Kompetensi Pegawai, Telah Mempertimbangkan Hasil Pengelolaan Kinerja Pegawai',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iii. Pengembangan Pegawai Berbasis Kompetensi',
+                'pertanyaan' => 'c. Persentase Kesenjangan Kompetensi Pegawai Yang Ada Dengan Standar Kompetensi Yang Ditetapkan Untuk Masing-masing Jabatan',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iii. Pengembangan Pegawai Berbasis Kompetensi',
+                'pertanyaan' => 'd. Pegawai Di Unit Kerja Telah Memperoleh Kesempatan/hak Untuk Mengikuti Diklat Maupun Pengembangan Kompetensi Lainnya',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iii. Pengembangan Pegawai Berbasis Kompetensi',
+                'pertanyaan' => 'e. Dalam Pelaksanaan Pengembangan Kompetensi, Unit Kerja Melakukan Upaya Pengembangan Kompetensi Kepada Pegawai (misalnya Melalui Coaching, Mentoring, Dsb.)',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iii. Pengembangan Pegawai Berbasis Kompetensi',
+                'pertanyaan' => 'f. Telah Dilakukan Monitoring Dan Evaluasi Terhadap Hasil Pengembangan Kompetensi Dalam Kaitannya Dengan Perbaikan Kinerja',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iv. Penetapan Kinerja Individu',
+                'pertanyaan' => 'a. Terdapat Penetapan Kinerja Individu Yang Terkait Dengan Kinerja Organisasi',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iv. Penetapan Kinerja Individu',
+                'pertanyaan' => 'b. Ukuran Kinerja Individu Telah Memiliki Kesesuaian Dengan Indikator Kinerja Individu Level Di Atasnya',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iv. Penetapan Kinerja Individu',
+                'pertanyaan' => 'c. Pengukuran Kinerja Individu Dilakukan Secara Periodik',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'iv. Penetapan Kinerja Individu',
+                'pertanyaan' => 'd. Hasil Penilaian Kinerja Individu Telah Dilaksanakan/diimplementasikan Mulai Dari Penetapan, Implementasi Dan Pemantauan',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'v. Penegakan Aturan Disiplin/kode Etik/kode Perilaku Pegawai',
+                'pertanyaan' => 'a. Aturan Disiplin/kode Etik/kode Perilaku Telah Dilaksanakan/diimplementasikan',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '3. Penataan Sistem Manajemen Sdm',
+                'subpilar' => 'vi. Sistem Informasi Kepegawaian',
+                'pertanyaan' => 'a. Data Informasi Kepegawaian Unit Kerja Telah Dimutakhirkan Secara Berkala',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'i. Keterlibatan Pimpinan',
+                'pertanyaan' => 'a. Pimpinan Terlibat Secara Langsung Pada Saat Penyusunan Perjanjian Kinerja',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'i. Keterlibatan Pimpinan',
+                'pertanyaan' => 'b. Pimpinan Memantau Pencapaian Kinerja Secara Berkala',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'ii. Pengelolaan Akuntabilitas Kinerja',
+                'pertanyaan' => 'a. Dokumen Perencanaan Sudah Berorientasi Hasil',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'ii. Pengelolaan Akuntabilitas Kinerja',
+                'pertanyaan' => 'b. Indikator Kinerja Utama (iku) Telah Digunakan Sebagai Dasar Untuk Mengukur Keberhasilan Pencapaian Sasaran Strategis',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'ii. Pengelolaan Akuntabilitas Kinerja',
+                'pertanyaan' => 'c. Laporan Kinerja Telah Disusun Tepat Waktu',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'ii. Pengelolaan Akuntabilitas Kinerja',
+                'pertanyaan' => 'd. Laporan Kinerja Telah Memberikan Informasi Tentang Kinerja',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'ii. Pengelolaan Akuntabilitas Kinerja',
+                'pertanyaan' => 'e. Telah Terdapat Upaya Peningkatan Kapasitas Sdm Yang Menangani Akuntabilitas Kinerja',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'ii. Pengelolaan Akuntabilitas Kinerja',
+                'pertanyaan' => 'f. Pemberian Reward And Punishment',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'ii. Pengelolaan Akuntabilitas Kinerja',
+                'pertanyaan' => 'g. Hasil Capaian/monitoring Perjanjian Kinerja Telah Dijadikan Dasar Sebagai Pemberian Reward And Punishment Bagi Organisasi',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '4. Penguatan Akuntabilitas',
+                'subpilar' => 'iii. Kerangka Logis Kinerja',
+                'pertanyaan' => 'a. Apakah Terdapat Penjenjangan Kinerja (kerangka Logis Kinerja) Yang Mengacu Pada Kinerja Utama Organisasi Dan Dijadikan Dalam Penentuan Kinerja Seluruh Pegawai?',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '5. Penguatan Pengawasan',
+                'subpilar' => 'i. Mekanisme Pengendalian',
+                'pertanyaan' => 'a. Telah Dilakukan Mekanisme Pengendalian Aktivitas Secara Berjenjang',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '5. Penguatan Pengawasan',
+                'subpilar' => 'ii. Penanganan Pengaduan Masyarakat',
+                'pertanyaan' => 'a. Persentase Penanganan Pengaduan Masyarakat',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '5. Penguatan Pengawasan',
+                'subpilar' => 'iii. Penyampaian Laporan Harta Kekayaan',
+                'pertanyaan' => 'a. Persentase Penyampaian Lhkpn',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '6. Peningkatan Kualitas Pelayanan Publik',
+                'subpilar' => 'i. Upaya Dan/atau Inovasi Pelayanan Publik',
+                'pertanyaan' => 'a. "upaya Dan/atau Inovasi Telah Mendorong Perbaikan Pelayanan Publik Pada:
+        1. Kesesuaian Persyaratan
+        2. Kemudahan Sistem, Mekanisme, Dan Prosedur
+        3. Kecepatan Waktu Penyelesaian
+        4. Kejelasan Biaya/tarif, Gratis
+        5. Kualitas Produk Spesifikasi Jenis Pelayanan
+        6. Kompetensi Pelaksana/web
+        7. Perilaku Pelaksana/web
+        8. Kualitas Sarana Dan Prasarana
+        9. Penanganan Pengaduan, Saran Dan Masukan"',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '6. Peningkatan Kualitas Pelayanan Publik',
+                'subpilar' => 'i. Upaya Dan/atau Inovasi Pelayanan Publik',
+                'pertanyaan' => 'b. "upaya Dan/atau Inovasi Pada Perijinan/pelayanan Telah Dipermudah:
+        1. Waktu Lebih Cepat
+        2. Pelayanan Publik Yang Terpadu
+        3. Alur Lebih Pendek/singkat
+        4. Prosedur Lebih Sederhana
+        5. Biaya Lebih Murah
+        6. Bebas Dari Kkn
+        7. Terdapat Sistem Reward And Punishment Bagi Pelaksana Layanan"',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '6. Peningkatan Kualitas Pelayanan Publik',
+                'subpilar' => 'i. Upaya Dan/atau Inovasi Pelayanan Publik',
+                'pertanyaan' => 'c. Telah Dibangun/dikembangkan Sistem Pelayanan Terpadu/terintegrasi',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '6. Peningkatan Kualitas Pelayanan Publik',
+                'subpilar' => 'i. Upaya Dan/atau Inovasi Pelayanan Publik',
+                'pertanyaan' => 'd. Telah Dilakukan Perbaikan/inovasi Pelayanan Publik Berdasarkan Hasil Survei Kepuasan Masyarakat',
+            ],
+            [
+                'aspek' => 'A. Pengungkit',
+                'area' => 'I. Pemenuhan',
+                'pilar' => '6. Peningkatan Kualitas Pelayanan Publik',
+                'subpilar' => 'i. Upaya Dan/atau Inovasi Pelayanan Publik',
+                'pertanyaan' => 'e. Telah Terdapat Inovasi Pelayanan Publik Yang Menjadi Percontohan Di Tingkat Nasional/internasional',
+            ],
         ];
 
+        echo "Memulai proses sinkronisasi dengan struktur folder baru...<br><br>";
+
         foreach ($ziData as $data) {
-            $folderMetadata = new Drive\DriveFile([
-                'name' => $data['poin'],
-                'mimeType' => 'application/vnd.google-apps.folder',
-                'parents' => [$parentFolderId]
-            ]);
+            // Logika penamaan folder ringkas dan nama folder panjang
+            preg_match('/^([a-z0-9A-Z]+\.)/', $data['pertanyaan'], $matches);
+            $nomorPertanyaan = $matches[0] ?? '';
+            $shortFolderName = trim($data['subpilar'] . ' - ' . str_replace('.', '', $nomorPertanyaan));
+            $longFolderName = trim($data['pertanyaan']);
+            
+            echo "Memproses: <strong>" . $longFolderName . "</strong><br>";
 
-            $folder = $this->drive->files->create($folderMetadata, ['fields' => 'id']);
+            // === LOGIKA NAVIGASI FOLDER YANG SUDAH DIPERBAIKI ===
+            // 1. Dapatkan atau buat folder Aspek di dalam folder utama ($parentFolderId)
+            $aspekFolderId = $this->getOrCreateFolder($data['aspek'], $parentFolderId);
+            
+            // 2. Dapatkan atau buat folder Pilar di dalam folder Aspek
+            $pilarFolderId = $this->getOrCreateFolder($data['pilar'], $aspekFolderId);
 
-            ZIChecklist::create([
-                'area_perubahan' => $data['area'],
-                'poin_penilaian' => $data['poin'],
-                'google_drive_folder_id' => $folder->id,
-                'status' => 'Kosong'
-            ]);
+            // 3. Dapatkan atau buat folder Area di dalam folder Pilar
+            $areaFolderId = $this->getOrCreateFolder($data['area'], $pilarFolderId);
+            
+            // 4. Cari folder pertanyaan (ringkas/panjang) di dalam folder Area
+            $finalFolderId = null;
+            $folder = $this->findFolderByName($shortFolderName, $areaFolderId);
+            if ($folder) {
+                $finalFolderId = $folder->id;
+            } else {
+                $folder = $this->findFolderByName($longFolderName, $areaFolderId);
+                if ($folder) {
+                    $finalFolderId = $folder->id;
+                    $this->renameFolder($finalFolderId, $shortFolderName); // Rapikan nama
+                }
+            }
+
+            // 5. Jika tidak ada, buat folder pertanyaan di dalam folder Area
+            if (!$finalFolderId) {
+                $finalFolderId = $this->createFolder($shortFolderName, $areaFolderId)->id;
+            }
+            // === AKHIR LOGIKA YANG DIPERBAIKI ===
+
+            // Simpan atau perbarui data di database lokal (ini sudah benar)
+            if ($finalFolderId) {
+                ZIChecklist::updateOrCreate(
+                    ['pertanyaan' => $data['pertanyaan']], // Kunci unik
+                    [
+                        'aspek' => $data['aspek'],
+                        'area' => $data['area'],
+                        'pilar' => $data['pilar'],
+                        'sub_pilar' => $data['subpilar'],
+                        'google_drive_folder_id' => $finalFolderId,
+                    ]
+                );
+            }
+            echo "Berhasil memetakan.<hr>";
         }
+
+        echo "<b>Proses Migrasi Selesai!</b>";
     }
 
+    /**
+     * Helper untuk menavigasi atau membuat path folder.
+     */
+    private function getFolderIdByPath($data, $rootFolderId)
+    {
+        $pilarFolderId = $this->getOrCreateFolder($data['pilar'], $rootFolderId);
+        $areaFolderId = $this->getOrCreateFolder($data['area'], $pilarFolderId);
+        return $areaFolderId; // Folder pertanyaan akan berada di dalam folder Area
+    }
+
+    /**
+     * Helper untuk mencari atau membuat folder.
+     */
+    private function getOrCreateFolder($name, $parentId)
+    {
+        $folder = $this->findFolderByName($name, $parentId);
+        if ($folder) {
+            return $folder->id;
+        }
+        return $this->createFolder($name, $parentId)->id;
+    }
+
+    /**
+     * Helper untuk mencari folder berdasarkan nama dan parent ID.
+     */
+    private function findFolderByName($name, $parentId)
+    {
+        $cleanName = addslashes(trim($name));
+        $query = "name = '$cleanName' and '$parentId' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false";
+        $optParams = ['q' => $query, 'fields' => 'files(id, name)', 'pageSize' => 1];
+        $results = $this->drive->files->listFiles($optParams);
+
+        return count($results->getFiles()) > 0 ? $results->getFiles()[0] : null;
+    }
+    
+    /**
+     * Helper untuk membuat folder baru.
+     */
+    private function createFolder($name, $parentId)
+    {
+        $folderMetadata = new \Google\Service\Drive\DriveFile([
+            'name' => trim($name),
+            'mimeType' => 'application/vnd.google-apps.folder',
+            'parents' => [$parentId]
+        ]);
+        return $this->drive->files->create($folderMetadata, ['fields' => 'id']);
+    }
+
+    /**
+     * Helper untuk mengganti nama folder.
+     */
+    private function renameFolder($folderId, $newName)
+    {
+        $fileMetadata = new \Google\Service\Drive\DriveFile(['name' => trim($newName)]);
+        $this->drive->files->update($folderId, $fileMetadata, ['fields' => 'id']);
+    }
+
+    /**
+     * Sinkronisasi status folder (Kosong/Terisi).
+     */
     public function syncStatus()
     {
-        $checklists = ZIChecklist::all();
-
+        $checklists = ZIChecklist::whereNotNull('google_drive_folder_id')->get();
         foreach ($checklists as $item) {
-            $folderId = $item->google_drive_folder_id;
-            $query = "'$folderId' in parents";
-            $optParams = [
-                'q' => $query,
-                'pageSize' => 1, // Kita hanya butuh tahu ada file atau tidak
-                'fields' => 'files(id)',
-            ];
-
-            $results = $this->drive->files->listFiles($optParams);
-
-            if (count($results->getFiles()) > 0) {
-                $item->status = 'Terisi';
-            } else {
-                $item->status = 'Kosong';
-            }
+            $query = "'{$item->google_drive_folder_id}' in parents and trashed = false";
+            $results = $this->drive->files->listFiles(['q' => $query, 'pageSize' => 1, 'fields' => 'files(id)']);
+            $item->status = count($results->getFiles()) > 0 ? 'Terisi' : 'Kosong';
             $item->save();
         }
-
         return redirect()->route('zi.index')->with('success', 'Status folder berhasil disinkronkan!');
     }
 }
