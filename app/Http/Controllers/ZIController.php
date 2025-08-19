@@ -928,6 +928,7 @@ class ZIController extends Controller
      */
     public function syncStatus()
     {
+        set_time_limit(0);
         $checklists = ZIChecklist::whereNotNull('google_drive_folder_id')->get();
         foreach ($checklists as $item) {
             $query = "'{$item->google_drive_folder_id}' in parents and trashed = false";
