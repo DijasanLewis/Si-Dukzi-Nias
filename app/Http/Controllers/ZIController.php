@@ -26,9 +26,26 @@ class ZIController extends Controller
      */
     public function index()
     {
-        // Mengambil data dan mengelompokkannya untuk tampilan yang lebih terstruktur
-        $checklists = ZIChecklist::orderBy('id')->get()->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']);
-        return view('dashboard', compact('checklists'));
+        // Ambil semua data checklist sekali saja untuk efisiensi
+        $allChecklists = ZIChecklist::orderBy('id')->get();
+
+        // 1. Siapkan data yang dikelompokkan untuk tampilan akordion (struktur ini tetap sama)
+        $checklists = $allChecklists->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']);
+
+        // 2. Siapkan data "flat" dalam format JSON untuk fuzzy search di frontend
+        $searchableData = $allChecklists->map(function ($item) {
+            return [
+                'id' => $item->id,
+                // Gabungkan semua teks yang relevan menjadi satu string untuk pencarian
+                'text' => implode(' ', [$item->aspek, $item->area, $item->pilar, $item->sub_pilar, $item->pertanyaan]),
+            ];
+        });
+
+        // 3. Kirim kedua variabel ke view
+        return view('dashboard', [
+            'checklists' => $checklists,
+            'searchableData' => $searchableData->toJson() // Kirim sebagai string JSON
+        ]);
     }
 
     /**
