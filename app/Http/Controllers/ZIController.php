@@ -28,7 +28,7 @@ class ZIController extends Controller
     {
         // Mengambil data dan mengelompokkannya untuk tampilan yang lebih terstruktur
         $checklists = ZIChecklist::orderBy('id')->get()->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']);
-        return view('zi_index', compact('checklists'));
+        return view('dashboard', compact('checklists'));
     }
 
     /**
