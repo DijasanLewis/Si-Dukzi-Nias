@@ -14,7 +14,7 @@ Route::get('/', function () {
 // Halaman yang hanya bisa diakses setelah login
 Route::middleware('auth')->group(function () {
     // Halaman Utama (Dashboard)
-    Route::get('/dashboard', [ZIController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [ZIController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
     
     // Halaman Monitoring
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
 
     // Rute untuk migrasi (JANGAN LUPA DIHAPUS SETELAH SELESAI)
     Route::get('/migrate-drive', [ZIController::class, 'migrateDriveStructure']);
-    Route::get('/sync', [ZIController::class, 'syncStatus'])->name('zi.sync');
+    //Route::get('/sync', [ZIController::class, 'syncStatus'])->name('zi.sync');
 
     // Rute profil bawaan Breeze
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

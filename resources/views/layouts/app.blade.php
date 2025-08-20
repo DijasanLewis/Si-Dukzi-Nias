@@ -10,14 +10,9 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        {{-- HAPUS: Semua script CDN di bawah ini dihapus karena sudah dikelola oleh Vite --}}
-        {{-- <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script> --}}
-        {{-- <script defer src="https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-clipboard@2.x.x/dist/alpine-clipboard.min.js"></script> --}}
-        {{-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs-toast@2.x.x/dist/cdn.min.js"></script> --}}
-        {{-- <script defer src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script> --}}
-        
-        {{-- TETAPKAN: Ini adalah satu-satunya baris yang dibutuhkan untuk CSS dan JS --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        @filamentStyles
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -36,8 +31,8 @@
             </main>
         </div>
 
-        {{-- GANTI: Seluruh blok toast yang rumit diganti dengan satu baris ini --}}
-        <div x-toaster></div>
-
+        @livewireScripts
+        <livewire:notifications />
+        @stack('scripts')
     </body>
 </html>

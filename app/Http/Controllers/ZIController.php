@@ -15,7 +15,7 @@ class ZIController extends Controller
     {
         $client = new Client();
         // Pastikan path ke file JSON Anda benar
-        $client->setAuthConfig(storage_path('app/si-dukzi-bps-nias-bcdb9900169c.json'));
+        $client->setAuthConfig(storage_path('app/' . env('GOOGLE_DRIVE_CREDENTIALS_PATH')));
         $client->addScope(Drive::DRIVE);
         $this->drive = new Drive($client);
     }
@@ -26,26 +26,9 @@ class ZIController extends Controller
      */
     public function index()
     {
-        // Ambil semua data checklist sekali saja untuk efisiensi
-        $allChecklists = ZIChecklist::orderBy('id')->get();
-
-        // 1. Siapkan data yang dikelompokkan untuk tampilan akordion (struktur ini tetap sama)
-        $checklists = $allChecklists->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']);
-
-        // 2. Siapkan data "flat" dalam format JSON untuk fuzzy search di frontend
-        $searchableData = $allChecklists->map(function ($item) {
-            return [
-                'id' => $item->id,
-                // Gabungkan semua teks yang relevan menjadi satu string untuk pencarian
-                'text' => implode(' ', [$item->aspek, $item->area, $item->pilar, $item->sub_pilar, $item->pertanyaan]),
-            ];
-        });
-
-        // 3. Kirim kedua variabel ke view
-        return view('dashboard', [
-            'checklists' => $checklists,
-            'searchableData' => $searchableData->toJson() // Kirim sebagai string JSON
-        ]);
+        // Tugas controller sekarang hanya menampilkan view utama.
+        // Semua logika data sudah ditangani oleh komponen Livewire.    
+        return view('dashboard');
     }
 
     /**
@@ -943,16 +926,16 @@ class ZIController extends Controller
     /**
      * Sinkronisasi status folder (Kosong/Terisi).
      */
-    public function syncStatus()
-    {
-        set_time_limit(0);
-        $checklists = ZIChecklist::whereNotNull('google_drive_folder_id')->get();
-        foreach ($checklists as $item) {
-            $query = "'{$item->google_drive_folder_id}' in parents and trashed = false";
-            $results = $this->drive->files->listFiles(['q' => $query, 'pageSize' => 1, 'fields' => 'files(id)']);
-            $item->status = count($results->getFiles()) > 0 ? 'Terisi' : 'Kosong';
-            $item->save();
-        }
-        return redirect()->route('zi.index')->with('success', 'Status folder berhasil disinkronkan!');
-    }
+    // public function syncStatus()
+    // {
+    //     set_time_limit(0);
+    //     $checklists = ZIChecklist::whereNotNull('google_drive_folder_id')->get();
+    //     foreach ($checklists as $item) {
+    //         $query = "'{$item->google_drive_folder_id}' in parents and trashed = false";
+    //         $results = $this->drive->files->listFiles(['q' => $query, 'pageSize' => 1, 'fields' => 'files(id)']);
+    //         $item->status = count($results->getFiles()) > 0 ? 'Terisi' : 'Kosong';
+    //         $item->save();
+    //     }
+    //     return redirect()->route('zi.index')->with('success', 'Status folder berhasil disinkronkan!');
+    // }
 }
