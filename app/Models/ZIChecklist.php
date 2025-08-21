@@ -12,6 +12,7 @@ class ZIChecklist extends Model
     // Ganti nama tabel jika tidak sesuai standar Laravel (opsional, tapi disarankan)
     protected $table = 'z_i_checklists';
 
+    
     /**
      * The attributes that are mass assignable.
      *

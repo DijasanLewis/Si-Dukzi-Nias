@@ -11,6 +11,7 @@ use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Exception;
+use HighSolutions\LaravelSearchy\Facades\Searchy;
 
 class DashboardChecklist extends Component
 {
@@ -84,21 +85,22 @@ class DashboardChecklist extends Component
 
     public function render(): View
     {
-        $query = ZIChecklist::query()->orderBy('id');
-
+        $checklists = collect();
         if (!empty($this->search)) {
-            $query->where(function ($q) {
-                $searchTerm = '%' . $this->search . '%';
-                $q->where('pertanyaan', 'like', $searchTerm)
-                  ->orWhere('aspek', 'like', $searchTerm)
-                  ->orWhere('area', 'like', $searchTerm)
-                  ->orWhere('pilar', 'like', $searchTerm)
-                  ->orWhere('sub_pilar', 'like', $searchTerm);
-            });
+            // MENGGUNAKAN FACADE SECARA LANGSUNG DENGAN NAMESPACE LENGKAP
+            $results = Searchy::search('z_i_checklists')
+                              ->fields(['pertanyaan', 'aspek', 'area', 'pilar', 'sub_pilar'])
+                              ->query($this->search)
+                              ->get();
+            
+            // Mendapatkan kembali koleksi model
+            $checklists = ZIChecklist::hydrate($results->toArray());
+        } else {
+            $checklists = ZIChecklist::all();
         }
 
         return view('livewire.dashboard-checklist', [
-            'checklists' => $query->get()->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']),
+            'checklists' => $checklists->sortBy('id')->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']),
         ]);
     }
 }
