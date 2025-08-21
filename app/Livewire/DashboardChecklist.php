@@ -6,22 +6,23 @@ use App\Models\ZIChecklist;
 use Filament\Notifications\Notification;
 use Google\Client;
 use Google\Service\Drive;
+use Illuminate\Support\Facades\Log; // Import Log facade
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Exception;
 
 class DashboardChecklist extends Component
 {
-    /**
-     * Properti yang terhubung dengan input pencarian di frontend.
-     * Ini adalah SATU-SATUNYA state yang perlu dikelola Livewire.
-     * @var string
-     */
     public string $search = '';
 
-    /**
-     * Fungsi untuk menyalin link dan mengirim notifikasi menggunakan sistem bawaan Filament.
-     */
+    #[On('checklist-updated')]
+    public function refreshComponent(): void
+    {
+        // Metode ini sengaja kosong. Atribut #[On] akan memicu re-render
+        // komponen secara otomatis saat event 'checklist-updated' diterima.
+    }
+    
     public function copyLink(string $folderId): void
     {
         $link = "https://drive.google.com/drive/folders/{$folderId}";
@@ -33,11 +34,10 @@ class DashboardChecklist extends Component
             ->send();
     }
 
-    /**
-     * Sinkronisasi status folder (Kosong/Terisi) langsung dari komponen Livewire.
-     */
     public function syncStatus(): void
     {
+        Log::info('Memulai proses sinkronisasi status folder.');
+
         try {
             set_time_limit(0);
 
@@ -47,12 +47,18 @@ class DashboardChecklist extends Component
             $drive = new Drive($client);
 
             $itemsToSync = ZIChecklist::whereNotNull('google_drive_folder_id')->get();
+            Log::info("Ditemukan {$itemsToSync->count()} item untuk disinkronkan.");
 
             foreach ($itemsToSync as $item) {
                 $query = "'{$item->google_drive_folder_id}' in parents and trashed = false";
                 $results = $drive->files->listFiles(['q' => $query, 'pageSize' => 1, 'fields' => 'files(id)']);
-                $item->status = count($results->getFiles()) > 0 ? 'Terisi' : 'Kosong';
-                $item->save();
+                $newStatus = count($results->getFiles()) > 0 ? 'Terisi' : 'Kosong';
+
+                if ($item->status !== $newStatus) {
+                    Log::info("Memperbarui item ID: {$item->id} ('{$item->pertanyaan}') dari '{$item->status}' menjadi '{$newStatus}'.");
+                    $item->status = $newStatus;
+                    $item->save();
+                }
             }
 
             Notification::make()
@@ -60,26 +66,26 @@ class DashboardChecklist extends Component
                 ->body('Status semua folder telah diperbarui.')
                 ->success()
                 ->send();
+                
+            Log::info('Proses sinkronisasi status folder selesai dengan sukses.');
+            
+            // Memberi tahu komponen untuk me-refresh dirinya sendiri.
+            $this->dispatch('checklist-updated');
 
         } catch (Exception $e) {
+            Log::error('Sinkronisasi Gagal: ' . $e->getMessage());
             Notification::make()
                 ->title('Sinkronisasi Gagal')
-                ->body('Terjadi kesalahan: ' . $e->getMessage())
+                ->body('Terjadi kesalahan. Periksa file log untuk detail.')
                 ->danger()
                 ->send();
         }
     }
 
-    /**
-     * Merender (menampilkan) view komponen.
-     * Semua logika pengambilan dan pemrosesan data sekarang ada di sini.
-     */
     public function render(): View
     {
-        // Memulai query ke model ZIChecklist
         $query = ZIChecklist::query()->orderBy('id');
 
-        // Jika ada input di kotak pencarian, tambahkan filter ke query
         if (!empty($this->search)) {
             $query->where(function ($q) {
                 $searchTerm = '%' . $this->search . '%';
@@ -91,15 +97,8 @@ class DashboardChecklist extends Component
             });
         }
 
-        // Eksekusi query untuk mendapatkan semua data
-        $allChecklists = $query->get();
-
-        // Kelompokkan data untuk tampilan akordion
-        $checklists = $allChecklists->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']);
-
-        // Kirim data yang sudah diproses ke view
         return view('livewire.dashboard-checklist', [
-            'checklists' => $checklists,
+            'checklists' => $query->get()->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']),
         ]);
     }
 }

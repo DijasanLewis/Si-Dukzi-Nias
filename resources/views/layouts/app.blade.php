@@ -12,6 +12,9 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+        <link rel="stylesheet" href="{{ asset('css/filament/filament/app.css') }}" />
+        <script src="{{ asset('js/filament/filament/app.js') }}" defer></script>
+
         @filamentStyles
     </head>
     <body class="font-sans antialiased">
@@ -32,7 +35,7 @@
         </div>
 
         @livewireScripts
-        <livewire:notifications />
+        @livewire('notifications')
         @stack('scripts')
     </body>
 </html>

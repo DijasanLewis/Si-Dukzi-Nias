@@ -121,8 +121,8 @@
     <script>
         document.addEventListener('livewire:initialized', () => {
             @this.on('copy-to-clipboard', (event) => {
-                // Gunakan array destructuring untuk mendapatkan teks dari event
-                const [textToCopy] = event;
+                
+                const textToCopy = event.text; 
                 navigator.clipboard.writeText(textToCopy)
                     .catch(err => {
                         console.error('Gagal menyalin teks: ', err);
