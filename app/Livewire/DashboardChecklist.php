@@ -2,10 +2,12 @@
 
 namespace App\Livewire;
 
+use App\Models\Petugas;
 use App\Models\ZIChecklist;
 use Filament\Notifications\Notification;
 use Google\Client;
 use Google\Service\Drive;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log; // Import Log facade
 use Illuminate\View\View;
 use Livewire\Attributes\On;
@@ -16,6 +18,93 @@ use HighSolutions\LaravelSearchy\Facades\Searchy;
 class DashboardChecklist extends Component
 {
     public string $search = '';
+    public Collection $petugasList;
+
+    // Properti ini akan menampung data kendala untuk setiap item
+    public array $kendala = [];
+
+    // Properti ini akan menampung data petugas_id untuk setiap item
+    public array $assignedPetugas = [];
+
+    public ?ZIChecklist $editingKendala = null;
+    public string $kendalaText = '';
+
+    public function mount(): void
+    {
+        // Muat daftar petugas sekali saat komponen diinisialisasi
+        $this->petugasList = Petugas::orderBy('nama')->get();
+
+        // Inisialisasi properti kendala dan petugas dari data yang ada di database
+        $checklists = ZIChecklist::all();
+        foreach ($checklists as $item) {
+            $this->kendala[$item->id] = $item->kendala;
+            $this->assignedPetugas[$item->id] = $item->petugas_id;
+        }
+    }
+
+    /**
+     * "Magic method" yang akan dipanggil setiap kali dropdown petugas diubah.
+     */
+    public function updatedAssignedPetugas($petugasId, $checklistId): void
+    {
+        $checklist = ZIChecklist::find($checklistId);
+        if ($checklist) {
+            $checklist->update(['petugas_id' => $petugasId ?: null]);
+        }
+    }
+
+    /**
+     * "Magic method" yang akan dipanggil setiap kali textarea kendala diubah.
+     * .debounce(500) artinya method ini hanya akan dipanggil 500ms setelah pengguna berhenti mengetik.
+     */
+    public function updatedKendala($kendalaText, $checklistId): void
+    {
+        $checklist = ZIChecklist::find($checklistId);
+        if ($checklist) {
+            $checklist->update(['kendala' => $kendalaText]);
+        }
+    }
+
+    /**
+     * Membuka modal dan mengirim event ke browser.
+     */
+    public function editKendala(int $checklistId): void
+    {
+        $this->editingKendala = ZIChecklist::find($checklistId);
+        $this->kendalaText = $this->editingKendala?->kendala ?? '';
+        
+        // Kirim event untuk membuka modal di sisi frontend
+        $this->dispatch('open-kendala-modal');
+    }
+
+    /**
+     * Menyimpan data kendala dan mengirim event untuk menutup modal.
+     */
+    public function saveKendala(): void
+    {
+        if ($this->editingKendala) {
+            $this->editingKendala->update(['kendala' => $this->kendalaText]);
+            $this->kendala[$this->editingKendala->id] = $this->kendalaText;
+            
+            Notification::make()
+                ->title('Kendala berhasil disimpan')
+                ->success()
+                ->send();
+        }
+
+        $this->closeKendalaModal();
+    }
+    
+    /**
+     * Menutup modal, mereset properti, dan mengirim event ke browser.
+     */
+    public function closeKendalaModal(): void
+    {
+        $this->reset('editingKendala', 'kendalaText');
+
+        // Kirim event untuk menutup modal di sisi frontend
+        $this->dispatch('close-kendala-modal');
+    }
 
     #[On('checklist-updated')]
     public function refreshComponent(): void

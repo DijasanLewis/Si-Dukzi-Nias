@@ -23,8 +23,15 @@ class ZIChecklist extends Model
         'area',
         'pilar',
         'sub_pilar',
-        'pertanyaan', // Izinkan kolom ini diisi
+        'pertanyaan',
         'google_drive_folder_id',
         'status',
+        'petugas_id',
+        'kendala'
     ];
+
+    public function petugas(): BelongsTo
+    {
+        return $this->belongsTo(Petugas::class);
+    }
 }

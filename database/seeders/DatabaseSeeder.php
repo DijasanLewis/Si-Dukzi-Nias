@@ -13,11 +13,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Menggunakan updateOrCreate untuk menghindari error duplikasi
+        // Ini akan mencari user dengan email 'test@example.com'
+        // Jika tidak ada, user baru akan dibuat.
+        // Jika sudah ada, namanya akan di-update menjadi 'Test User'.
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::updateOrCreate(
+            ['email' => 'test@example.com'], // Kondisi pencarian
+            [
+                'name' => 'Test User',
+                'password' => bcrypt('password'), // Pastikan ada password default
+            ]
+        );
+
+        $this->call([
+            PetugasSeeder::class,
         ]);
     }
 }
