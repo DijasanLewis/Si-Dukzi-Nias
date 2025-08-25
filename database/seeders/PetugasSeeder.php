@@ -31,7 +31,7 @@ class PetugasSeeder extends Seeder
         while (($data = fgetcsv($csvFile, 2000, ',')) !== false) {
             if (!$firstline) {
                 Petugas::create([
-                    // Sesuaikan 'nama' dan 'jabatan' dengan nama kolom di file CSV dan tabel Anda
+                    // Sesuaikan 'nama' dengan nama kolom di file CSV dan tabel Anda
                     'nama' => $data[0],      // Kolom pertama di CSV
                     // Tambahkan kolom lain jika ada
                 ]);
