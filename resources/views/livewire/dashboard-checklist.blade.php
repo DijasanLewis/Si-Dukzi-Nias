@@ -45,7 +45,7 @@
                 </div>
                 <div x-show="open" x-transition class="p-4 border-t border-gray-300 space-y-3 bg-white rounded-b-xl">
                     @foreach ($areas as $area => $pilars)
-                        <div x-data="{ open: true }" class="bg-white border border-blue-300 rounded-lg">
+                        <div x-data="{ open: false }" class="bg-white border border-blue-300 rounded-lg">
                             <div @click="open = !open" class="w-full flex justify-between items-center p-3 cursor-pointer bg-blue-50 hover:bg-blue-100">
                                 <span class="text-lg font-semibold text-blue-900">{{ $area }}</span>
                                 <svg class="w-5 h-5 transform transition-transform text-blue-500" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -102,8 +102,46 @@
                                                                     
                                                                         {{-- Tombol Copy Link --}}
                                                                         <button wire:click="copyLink('{{ $item->google_drive_folder_id }}')" title="Copy Link">
-                                                                        <img class="h-6 w-6" src="https://img.icons8.com/ios/50/copy-link.png" alt="copy-link"/>
+                                                                            <img class="h-6 w-6" src="https://img.icons8.com/ios/50/copy-link.png" alt="copy-link" />
                                                                         </button>
+
+                                                                        @script
+                                                                        <script>
+                                                                            $wire.on('copy-to-clipboard', ({ text }) => {
+                                                                                // Cek apakah Clipboard API didukung
+                                                                                if (navigator.clipboard) {
+                                                                                    navigator.clipboard.writeText(text).then(() => {
+                                                                                        console.log('Tautan berhasil disalin menggunakan Clipboard API!');
+                                                                                    }).catch(err => {
+                                                                                        console.error('Gagal menyalin:', err);
+                                                                                    });
+                                                                                } else {
+                                                                                    // Jika tidak didukung, gunakan fallback (metode lama)
+                                                                                    const textArea = document.createElement("textarea");
+                                                                                    textArea.value = text;
+                                                                                    textArea.style.position = "fixed";  // Hindari scroll
+                                                                                    textArea.style.top = "0";
+                                                                                    textArea.style.left = "-9999px"; // Posisikan di luar layar
+                                                                                    document.body.appendChild(textArea);
+                                                                                    textArea.focus();
+                                                                                    textArea.select();
+                                                                                    
+                                                                                    try {
+                                                                                        const successful = document.execCommand('copy');
+                                                                                        if (successful) {
+                                                                                            console.log('Tautan berhasil disalin menggunakan document.execCommand!');
+                                                                                        } else {
+                                                                                            console.error('Gagal menyalin menggunakan fallback.');
+                                                                                        }
+                                                                                    } catch (err) {
+                                                                                        console.error('Gagal menyalin:', err);
+                                                                                    }
+                                                                                    
+                                                                                    document.body.removeChild(textArea);
+                                                                                }
+                                                                            });
+                                                                        </script>
+                                                                        @endscript
                                                                     @endif
 
                                                                     {{-- Tombol Kendala --}}
@@ -198,20 +236,4 @@
             @endif
         </div>
     </div>
-
-    {{-- Script untuk menangani event copy-to-clipboard dari backend --}}
-    @push('scripts')
-    <script>
-        document.addEventListener('livewire:initialized', () => {
-            @this.on('copy-to-clipboard', (event) => {
-                
-                const textToCopy = event.text; 
-                navigator.clipboard.writeText(textToCopy)
-                    .catch(err => {
-                        console.error('Gagal menyalin teks: ', err);
-                    });
-            });
-        });
-    </script>
-    @endpush
 </div>

@@ -27,7 +27,7 @@
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Ringkasan</h2>
                 <div class="space-y-3">
                     <div class="flex justify-between items-baseline">
-                        <span class="text-gray-500">Jumlah PCL Aktif:</span>
+                        <span class="text-gray-500">Jumlah Petugas Aktif:</span>
                         <span class="font-bold text-2xl text-gray-800">{{ $statistikPetugas->count() }}</span>
                     </div>
                     <div class="flex justify-between items-baseline">
@@ -50,7 +50,7 @@
             >
         </div>
 
-        {{-- TABEL MONITORING PCL --}}
+        {{-- TABEL MONITORING PETUGAS --}}
         <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
