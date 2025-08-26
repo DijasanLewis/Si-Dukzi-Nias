@@ -4,11 +4,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ZIController;
-use App\Livewire\PclMonitoring;
 use Illuminate\Support\Facades\Route;
 
-// Jadikan halaman monitoring sebagai halaman utama (root)
-Route::get('/', PclMonitoring::class)->name('home');
+// Halaman Awal akan langsung diarahkan ke login
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 // Halaman yang hanya bisa diakses setelah login
 Route::middleware('auth')->group(function () {

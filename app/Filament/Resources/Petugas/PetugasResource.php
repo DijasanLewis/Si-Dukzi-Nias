@@ -27,6 +27,8 @@ class PetugasResource extends Resource
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('jabatan')
+                    ->maxLength(255),
             ]);
     }
 
@@ -35,6 +37,7 @@ class PetugasResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nama')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('jabatan')->searchable(),
                 Tables\Columns\TextColumn::make('zi_checklists_count')->counts('ziChecklists')->label('Jumlah Tugas'),
             ])
             ->filters([
