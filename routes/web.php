@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AdminController;
+// use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ZIController;
@@ -19,9 +19,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
 
     // Grup untuk Halaman Admin
-    Route::middleware('admin')->group(function () { // 'admin' middleware bisa dibuat nanti
-        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-    });
+    // Route::middleware('admin')->group(function () { // 'admin' middleware bisa dibuat nanti
+    //     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    // });
 
     // Rute untuk migrasi (JANGAN LUPA DIHAPUS SETELAH SELESAI)
     Route::get('/migrate-drive', [ZIController::class, 'migrateDriveStructure']);
@@ -31,6 +31,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // UNTUK TESTING
+    Route::get('/jalankan-tes-migrasi-drive', function () {
+        // Panggil method controller yang akan kita buat nanti
+        return app(\App\Http\Controllers\ZIController::class)->testMigrateDriveStructure();
+    })->middleware('auth'); // Lindungi dengan auth agar hanya user yang login bisa akses
+
 });
 
 require __DIR__.'/auth.php';

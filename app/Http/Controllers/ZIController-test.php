@@ -66,46 +66,4 @@ class ZIController extends Controller
 
     // TIDAK ADA LAGI FUNGSI-FUNGSI PRIVATE DI SINI
     // Semua sudah dipindahkan ke GoogleDriveService
-
-    /**
-     * FUNGSI KHUSUS UNTUK TESTING YANG AMAN.
-     * Fungsi ini tidak akan menyimpan apapun ke database.
-     */
-    public function testMigrateDriveStructure()
-    {
-        set_time_limit(0);
-
-        // 1. Ambil data dari file config TEST
-        $ziData = config('zi_checklist_test.data');
-
-        if (!$ziData) {
-            return "<b>Error:</b> File 'config/zi_checklist_test.php' tidak ditemukan atau kosong.";
-        }
-
-        // 2. Gunakan ID Folder "Wadah" Testing dari .env
-        // Ganti ID_FOLDER_TESTING_ANDA dengan ID folder dari Langkah 1
-        $testRootFolderId = 'ID_FOLDER_TESTING_ANDA';
-
-        // Panggil service Google Drive
-        $driveService = new \App\Services\GoogleDriveService();
-
-        echo "Memulai PROSES UJI COBA (DRY RUN)...<br>";
-        echo "Folder Root untuk Uji Coba: " . $testRootFolderId . "<br><br>";
-
-        foreach ($ziData as $data) {
-            echo "Memproses (tanpa simpan DB): <strong>" . htmlspecialchars($data['pertanyaan']) . "</strong><br>";
-
-            // 3. Panggil fungsi di service, TAPI ganti $rootFolderId dengan $testRootFolderId
-            // Kita modifikasi sedikit GoogleDriveService untuk ini (lihat langkah selanjutnya)
-            $folderId = $driveService->createChecklistFolderStructure($data, $testRootFolderId);
-
-            if ($folderId) {
-                echo "Folder berhasil dibuat/ditemukan dengan ID: " . $folderId . "<hr>";
-            } else {
-                echo "Gagal membuat folder untuk item ini.<hr>";
-            }
-        }
-
-        return "<b>UJI COBA SELESAI.</b> Periksa folder 'SI-DUKZI - TESTING' di Google Drive Anda. Tidak ada data yang diubah di database produksi.";
-    }
 }

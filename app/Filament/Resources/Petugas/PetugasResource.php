@@ -7,12 +7,21 @@ use App\Filament\Resources\Petugas\Pages\EditPetugas;
 use App\Filament\Resources\Petugas\Pages\ListPetugas;
 use App\Filament\Resources\Petugas\Schemas\PetugasForm;
 use App\Filament\Resources\Petugas\Tables\PetugasTable;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Filament\Actions;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use App\Models\Petugas;
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 
 class PetugasResource extends Resource
 {
@@ -23,35 +32,33 @@ class PetugasResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
-            ->schema([
-                Forms\Components\TextInput::make('nama')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('jabatan')
-                    ->maxLength(255),
-            ]);
+        ->schema([
+            // Buat input teks untuk 'nama'
+            TextInput::make('nama')
+                ->required() // Wajib diisi
+                ->maxLength(255), // Panjang maksimal karakter
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('nama')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('jabatan')->searchable(),
-                Tables\Columns\TextColumn::make('zi_checklists_count')->counts('ziChecklists')->label('Jumlah Tugas'),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        ->columns([
+            // Tampilkan kolom 'nama' sebagai teks, dan buat bisa di-sort
+            TextColumn::make('nama')->sortable()->searchable(),
+        ])
+        ->filters([
+            // (Filter bisa kita tambahkan nanti)
+        ])
+        ->actions([
+            EditAction::make()->iconButton(),
+            DeleteAction::make(), // Tambahkan aksi hapus
+        ])
+        ->bulkActions([
+            BulkActionGroup::make([
+                DeleteBulkAction::make(),
+            ]),
+        ]);
     }
 
     public static function getRelations(): array

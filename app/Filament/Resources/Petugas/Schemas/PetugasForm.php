@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Petugas\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PetugasForm
@@ -11,8 +10,7 @@ class PetugasForm
     {
         return $schema
             ->components([
-                TextInput::make('nama')
-                    ->required(),
+                //
             ]);
     }
 }
