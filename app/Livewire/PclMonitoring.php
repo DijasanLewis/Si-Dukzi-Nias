@@ -75,6 +75,6 @@ class PclMonitoring extends Component
         return view('livewire.pcl-monitoring', [
             'statistikPetugas' => $statistikPetugas,
             'overallStats' => $overallStats,
-        ])->layout('layouts.public');
+        ])->layout('layouts.app');
     }
 }

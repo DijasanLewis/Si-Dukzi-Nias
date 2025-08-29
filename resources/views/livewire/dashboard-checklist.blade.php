@@ -51,17 +51,17 @@
                                 <svg class="w-5 h-5 transform transition-transform text-blue-500" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </div>
                             <div x-show="open" x-transition class="px-4 py-2 border-t border-blue-200 space-y-3">
-                                @foreach ($pilars as $pilar => $subpilars)
+                                @foreach ($pilars as $pilar => $sub_pilars)
                                     <div x-data="{ open: false }" class="border-t border-gray-200 pt-2">
                                         <div @click="open = !open" class="w-full flex justify-between items-center py-2 cursor-pointer hover:bg-gray-50 rounded-md px-2">
                                             <span class="font-medium text-gray-800 text-base">{{ $pilar }}</span>
                                             <svg class="w-5 h-5 transform transition-transform text-gray-500" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                         </div>
                                         <div x-show="open" x-transition class="pl-4 pt-2 mt-1 border-l-2 border-blue-300 space-y-2">
-                                            @foreach ($subpilars as $subpilar => $pertanyaans)
+                                            @foreach ($sub_pilars as $sub_pilar => $pertanyaans)
                                                 <div x-data="{ open: false }">
                                                     <div @click="open = !open" class="w-full flex justify-between items-center py-2 cursor-pointer hover:bg-gray-50 rounded-md px-2">
-                                                        <span class="italic text-gray-600 text-base">{{ $subpilar }}</span>
+                                                        <span class="italic text-gray-600 text-base">{{ $sub_pilar }}</span>
                                                         <svg class="w-5 h-5 transform transition-transform text-gray-500" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                                     </div>
                                                     <div x-show="open" x-transition class="pl-4">

@@ -40,7 +40,7 @@ class MigrateChecklistData extends Command
                     'aspek' => $item['aspek'],
                     'area' => $item['area'],
                     'pilar' => $item['pilar'],
-                    'subpilar' => $item['subpilar'],
+                    'sub_pilar' => $item['sub_pilar'],
                 ]
             );
         }

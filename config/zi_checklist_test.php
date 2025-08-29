@@ -18,14 +18,14 @@ return [
             'aspek' => "A. Pengungkit",
             'pilar' => "1. Manajemen Perubahan",
             'area' => "I. Pemenuhan",
-            'subpilar' => "i. Penyusunan Tim Kerja",
+            'sub_pilar' => "i. Penyusunan Tim Kerja",
             'pertanyaan' => "a. tes tes tes uk Melakukan Pembangunan Zona Integritas",
         ],
         [
             'aspek' => "A. Pengungkit",
             'pilar' => "1. Manajemen Perubahan",
             'area' => "I. Pemenuhan",
-            'subpilar' => "i. Penyusunan Tim Kerja",
+            'sub_pilar' => "i. Penyusunan Tim Kerja",
             'pertanyaan' => "b. tes tes Dipilih Melalui Prosedur/Mekanisme Yang Jelas",
         ],
     ]

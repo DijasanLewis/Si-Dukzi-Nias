@@ -51,7 +51,7 @@ class ZIController extends Controller
                         'aspek' => $data['aspek'],
                         'area' => $data['area'],
                         'pilar' => $data['pilar'],
-                        'sub_pilar' => $data['subpilar'],
+                        'sub_pilar' => $data['sub_pilar'],
                         'google_drive_folder_id' => $folderId,
                     ]
                 );

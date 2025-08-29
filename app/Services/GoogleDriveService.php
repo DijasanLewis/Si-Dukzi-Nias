@@ -54,10 +54,10 @@ class GoogleDriveService
         $areaFolderId = $this->getOrCreateFolder($data['area'], $pilarFolderId);
 
         // 4. Dapatkan atau buat folder Sub Pilar di dalam Area
-        $subpilarFolderId = $this->getOrCreateFolder($data['sub_pilar'], $areaFolderId);
+        $sub_pilarFolderId = $this->getOrCreateFolder($data['sub_pilar'], $areaFolderId);
 
         // 5. Buat folder Pertanyaan di dalam Sub Pilar
-        $finalFolderId = $this->getOrCreateFolder($data['pertanyaan'], $subpilarFolderId);
+        $finalFolderId = $this->getOrCreateFolder($data['pertanyaan'], $sub_pilarFolderId);
 
         return $finalFolderId;
     }
