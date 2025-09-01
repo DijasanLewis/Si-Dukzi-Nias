@@ -5,25 +5,30 @@
             <h3 class="text-2xl font-bold text-gray-800">Daftar Checklist Zona Integritas</h3>
             <p class="text-base text-gray-500 mt-1">BPS Kabupaten Nias</p>
         </div>
-        
-        {{-- Tombol ini sekarang memanggil method 'syncStatus' di komponen Livewire --}}
-        <button 
-            type="button"
-            wire:click="syncStatus"
-            wire:loading.attr="disabled"
-            class="mt-4 sm:mt-0 flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-lg transition duration-300 text-base shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-wait">
-            
-            {{-- Indikator Loading --}}
-            <svg wire:loading wire:target="syncStatus" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-
-            {{-- Ikon Default --}}
-            <svg wire:loading.remove wire:target="syncStatus" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a5.002 5.002 0 008.057 2.332 1 1 0 11.886 1.786A7.002 7.002 0 014.999 17v-2.101a1 1 0 011.885-.666 1 1 0 01.115.033z" clip-rule="evenodd" /></svg>
-            
-            <span>Sinkronkan Status</span>
-        </button>
+        <div class="flex flex-col items-end gap-2">
+            {{-- Tombol ini sekarang memanggil method 'syncStatus' di komponen Livewire --}}
+            <div class="flex justify-end items-end gap-2">
+                <button 
+                    type="button"
+                    wire:click="syncStatus"
+                    wire:loading.attr="disabled"
+                    class="mt-4 sm:mt-0 flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-lg transition duration-300 text-base shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-wait">
+                    
+                    {{-- Indikator Loading --}}
+                    <svg wire:loading wire:target="syncStatus" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                 
+                    <span>Update Status (Terisi/Kosong)</span>
+                </button>
+            </div>
+            <div>
+                <p class="text-xs text-gray-500">
+                    Update untuk memperbarui status dan isi folder dari Google Drive. Misalnya saat file diupload atau dihapus dari folder.
+                </p>
+            </div>
+        </div>
     </div>
 
     {{-- FITUR PENCARIAN (Menggunakan Livewire) --}}
