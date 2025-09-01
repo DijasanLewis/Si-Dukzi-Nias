@@ -28,7 +28,18 @@ class ZIChecklist extends Model
         'google_drive_folder_id',
         'status',
         'petugas_id',
-        'kendala'
+        'kendala',
+        'kendala_updated_at'
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        // Memberitahu Laravel untuk memperlakukan kolom ini sebagai objek Carbon (Tanggal & Waktu)
+        'kendala_updated_at' => 'datetime', 
     ];
 
     public function petugas(): BelongsTo

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('z_i_checklists', function (Blueprint $table) {
-            //
+            // Menambahkan kolom untuk menyimpan waktu saat kendala diperbarui
+            $table->timestamp('kendala_updated_at')->nullable()->after('kendala');
         });
     }
 

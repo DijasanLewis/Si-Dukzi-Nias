@@ -8,6 +8,7 @@ use Filament\Notifications\Notification;
 use Google\Client;
 use Google\Service\Drive;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log; // Import Log facade
 use Illuminate\Support\Facades\Cache; // Import Cache facade
 use Illuminate\View\View;
@@ -108,7 +109,16 @@ class DashboardChecklist extends Component
     public function saveKendala(): void
     {
         if ($this->editingKendala) {
-            $this->editingKendala->update(['kendala' => $this->kendalaText]);
+            // Tentukan timestamp. Jika teks kendala kosong, timestamp di-null-kan.
+            $timestamp = !empty($this->kendalaText) ? Carbon::now() : null;
+
+            // Update database dengan teks kendala dan timestamp
+            $this->editingKendala->update([
+                'kendala' => $this->kendalaText,
+                'kendala_updated_at' => $timestamp,
+            ]);
+
+            // Sinkronkan state lokal (opsional tapi baik untuk UI reaktif)
             $this->kendala[$this->editingKendala->id] = $this->kendalaText;
             
             Notification::make()

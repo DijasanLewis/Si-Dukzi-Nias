@@ -229,6 +229,16 @@
                         {{ $editingKendala->pertanyaan }}
                     </h3>
 
+                    @if ($editingKendala->kendala_updated_at)
+                        <p class="mt-2 text-xs text-gray-400">
+                            Terakhir diperbarui: 
+                            <span class="font-medium text-gray-500">
+                                {{-- Format tanggal agar mudah dibaca --}}
+                                {{ $editingKendala->kendala_updated_at->format('d F Y, H:i') }}
+                            </span>
+                        </p>
+                    @endif
+
                     <textarea 
                         wire:model="kendalaText" 
                         rows="5" 
