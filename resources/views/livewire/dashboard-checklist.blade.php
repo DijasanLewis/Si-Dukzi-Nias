@@ -88,9 +88,42 @@
                                                                     </div>
                                                                     
                                                                     {{-- Status Badge --}}
-                                                                    <span class="w-20 text-center text-sm font-semibold rounded-full px-3 py-1 {{ $item->status == 'Terisi' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                                                        {{ $item->status }}
-                                                                    </span>
+                                                                    @if ($item->status == 'Terisi')
+                                                                        <div x-data="{ open: false }" class="relative">
+                                                                            <button 
+                                                                                @mouseenter="open = true" 
+                                                                                @mouseleave="open = false" 
+                                                                                @click="open = !open"
+                                                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 hover:bg-green-200 focus:outline-none">
+                                                                                Terisi
+                                                                            </button>
+
+                                                                            <div x-show="open"
+                                                                                x-transition
+                                                                                class="absolute z-50 -ml-4 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
+                                                                                
+                                                                                <ul class="space-y-1">
+                                                                                    {{-- Ambil data dari array $cachedFiles yang sudah kita siapkan --}}
+                                                                                    @forelse ($cachedFiles[$item->id] ?? [] as $file)
+                                                                                        <li class="flex items-center space-x-2 text-sm text-gray-600">
+                                                                                            <svg class="h-4 w-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0011.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                                                                                            <a href="{{ $file['link'] }}" target="_blank" class="truncate hover:underline" title="{{ $file['name'] }}">
+                                                                                                {{ $file['name'] }}
+                                                                                            </a>
+                                                                                        </li>
+                                                                                    @empty
+                                                                                        <li class="text-sm text-gray-500 italic">
+                                                                                            (Folder ini kosong atau cache belum ter-update)
+                                                                                        </li>
+                                                                                    @endforelse
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>  
+                                                                    @else
+                                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                                            Kosong
+                                                                        </span>
+                                                                    @endif
                                                                     
                                                                     @if($item->google_drive_folder_id)
                                                                         {{-- Tombol Upload --}}

@@ -9,6 +9,7 @@ use Google\Client;
 use Google\Service\Drive;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log; // Import Log facade
+use Illuminate\Support\Facades\Cache; // Import Cache facade
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -29,6 +30,9 @@ class DashboardChecklist extends Component
     public ?ZIChecklist $editingKendala = null;
     public string $kendalaText = '';
 
+    // Untuk fitur ambil daftar nama file dari google drive
+    public array $cachedFiles = [];
+
     public function mount(): void
     {
         // Muat daftar petugas sekali saat komponen diinisialisasi
@@ -39,6 +43,27 @@ class DashboardChecklist extends Component
         foreach ($checklists as $item) {
             $this->kendala[$item->id] = $item->kendala;
             $this->assignedPetugas[$item->id] = $item->petugas_id;
+        }
+
+        // Muat cache saat komponen pertama kali dijalankan
+        $this->refreshCachedFiles();
+    }
+
+    /**
+     * Metode ini akan dipanggil oleh event 'checklist-updated' SETELAH sinkronisasi
+     * dan juga saat komponen di-mount.
+     */
+    
+    public function refreshCachedFiles(): void
+    {
+        // Ambil ID dari semua checklist yang statusnya terisi
+        $terisiIds = ZIChecklist::where('status', 'Terisi')->pluck('id');
+        $this->cachedFiles = [];
+
+        // Untuk setiap ID, ambil datanya dari cache
+        foreach ($terisiIds as $id) {
+            $cacheKey = 'files_in_folder_' . $id;
+            $this->cachedFiles[$id] = Cache::get($cacheKey, []); 
         }
     }
 
@@ -126,26 +151,25 @@ class DashboardChecklist extends Component
 
     public function syncStatus(): void
     {
-        Log::info('Memulai proses sinkronisasi status folder.');
+        Log::info('Memulai proses sinkronisasi status folder via tombol.');
 
         try {
-            set_time_limit(0);
+            set_time_limit(0); // Tetap penting untuk proses yang mungkin lama
 
-            $client = new Client();
-            $client->setAuthConfig(storage_path('app/' . env('GOOGLE_DRIVE_CREDENTIALS_PATH')));
-            $client->addScope(Drive::DRIVE);
-            $drive = new Drive($client);
+            // 1. Panggil service yang sudah ada.
+            $driveService = new \App\Services\GoogleDriveService();
 
             $itemsToSync = ZIChecklist::whereNotNull('google_drive_folder_id')->get();
             Log::info("Ditemukan {$itemsToSync->count()} item untuk disinkronkan.");
 
             foreach ($itemsToSync as $item) {
-                $query = "'{$item->google_drive_folder_id}' in parents and trashed = false";
-                $results = $drive->files->listFiles(['q' => $query, 'pageSize' => 1, 'fields' => 'files(id)']);
-                $newStatus = count($results->getFiles()) > 0 ? 'Terisi' : 'Kosong';
+                // 2. Gunakan metode isFolderEmpty() yang sudah kita buat di service
+                $isFolderEmpty = $driveService->isFolderEmpty($item->google_drive_folder_id);
+                $newStatus = $isFolderEmpty ? 'Kosong' : 'Terisi';
 
+                // 3. Logika update tetap sama
                 if ($item->status !== $newStatus) {
-                    Log::info("Memperbarui item ID: {$item->id} ('{$item->pertanyaan}') dari '{$item->status}' menjadi '{$newStatus}'.");
+                    Log::info("Memperbarui item ID: {$item->id} dari '{$item->status}' menjadi '{$newStatus}'.");
                     $item->status = $newStatus;
                     $item->save();
                 }
@@ -153,13 +177,13 @@ class DashboardChecklist extends Component
 
             Notification::make()
                 ->title('Sinkronisasi Berhasil')
-                ->body('Status semua folder telah diperbarui.')
+                ->body('Status semua folder telah diperbarui sesuai kondisi di Google Drive.')
                 ->success()
                 ->send();
                 
             Log::info('Proses sinkronisasi status folder selesai dengan sukses.');
             
-            // Memberi tahu komponen untuk me-refresh dirinya sendiri.
+            // Memberi tahu komponen untuk me-refresh dirinya sendiri. Ini sudah benar.
             $this->dispatch('checklist-updated');
 
         } catch (Exception $e) {

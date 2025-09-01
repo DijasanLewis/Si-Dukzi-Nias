@@ -100,4 +100,73 @@ class GoogleDriveService
         $cleanName = str_replace(["\r", "\n"], ' ', $trimmedName);
         return preg_replace('/\s+/', ' ', $cleanName);
     }
+
+    /**
+     * Mengambil daftar file dari dalam sebuah folder Google Drive.
+     *
+     * @param string $folderId
+     * @return array Daftar nama file.
+     */
+    public function getFilesInFolder(string $folderId): array
+    {
+        try {
+            // Kueri untuk mencari semua file (bukan folder) di dalam folder induk ($folderId)
+            $query = "'{$folderId}' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false";
+            
+            // Parameter untuk meminta nama dan link web dari setiap file
+            $optParams = [
+                'q' => $query,
+                'fields' => 'files(name, webViewLink)',
+                'pageSize' => 20 // Batasi hingga 20 file per folder
+            ];
+
+            $results = $this->drive->files->listFiles($optParams);
+            $files = [];
+
+            // Ulangi setiap hasil dan simpan nama serta link-nya
+            foreach ($results->getFiles() as $file) {
+                $files[] = [
+                    'name' => $file->getName(),
+                    'link' => $file->getWebViewLink()
+                ];
+            }
+
+            return $files;
+
+        } catch (\Exception $e) {
+            // Jika terjadi error (misal: folder tidak ada), kembalikan array kosong
+            // menambahkan Log::error() di sini untuk debugging
+            Log::error('Error saat mengambil file dari folder: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Memeriksa apakah sebuah folder di Google Drive kosong atau tidak.
+     *
+     * @param string $folderId
+     * @return bool True jika kosong, false jika berisi file.
+     */
+    public function isFolderEmpty(string $folderId): bool
+    {
+        try {
+            // Kueri untuk mencari HANYA SATU file di dalam folder
+            $query = "'{$folderId}' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false";
+            
+            $optParams = [
+                'q' => $query,
+                'fields' => 'files(id)',
+                'pageSize' => 1 // Kunci efisiensi: kita hanya butuh 1 hasil untuk tahu folder ini tidak kosong
+            ];
+
+            $results = $this->drive->files->listFiles($optParams);
+            
+            // Jika jumlah file adalah 0, maka folder kosong
+            return count($results->getFiles()) === 0;
+
+        } catch (\Exception $e) {
+            // Jika terjadi error (misal: folder tidak ada), anggap saja kosong
+            return true;
+        }
+    }
 }
