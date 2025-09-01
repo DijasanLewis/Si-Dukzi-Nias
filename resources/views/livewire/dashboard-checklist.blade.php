@@ -39,28 +39,28 @@
     <div class="space-y-4">
         @forelse ($checklists as $aspek => $areas)
             <div x-data="{ open: true }" class="border border-gray-300 rounded-xl shadow-sm transition-shadow hover:shadow-md">
-                <div @click="open = !open" class="w-full flex justify-between items-center p-4 cursor-pointer bg-gray-100 rounded-t-xl hover:bg-gray-200">
+                <div @click.stop="open = !open" class="w-full flex justify-between items-center p-4 cursor-pointer bg-gray-100 rounded-t-xl hover:bg-gray-200">
                     <span class="text-xl font-bold text-gray-800 tracking-wide">{{ $aspek }}</span>
                     <svg class="w-6 h-6 transform transition-transform text-gray-600" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
                 <div x-show="open" x-transition class="p-4 border-t border-gray-300 space-y-3 bg-white rounded-b-xl">
                     @foreach ($areas as $area => $pilars)
                         <div x-data="{ open: false }" class="bg-white border border-blue-300 rounded-lg">
-                            <div @click="open = !open" class="w-full flex justify-between items-center p-3 cursor-pointer bg-blue-50 hover:bg-blue-100">
+                            <div @click.stop="open = !open" class="w-full flex justify-between items-center p-3 cursor-pointer bg-blue-50 hover:bg-blue-100">
                                 <span class="text-lg font-semibold text-blue-900">{{ $area }}</span>
                                 <svg class="w-5 h-5 transform transition-transform text-blue-500" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </div>
                             <div x-show="open" x-transition class="px-4 py-2 border-t border-blue-200 space-y-3">
                                 @foreach ($pilars as $pilar => $sub_pilars)
                                     <div x-data="{ open: false }" class="border-t border-gray-200 pt-2">
-                                        <div @click="open = !open" class="w-full flex justify-between items-center py-2 cursor-pointer hover:bg-gray-50 rounded-md px-2">
+                                        <div @click.stop="open = !open" class="w-full flex justify-between items-center py-2 cursor-pointer hover:bg-gray-50 rounded-md px-2">
                                             <span class="font-medium text-gray-800 text-base">{{ $pilar }}</span>
                                             <svg class="w-5 h-5 transform transition-transform text-gray-500" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                         </div>
                                         <div x-show="open" x-transition class="pl-4 pt-2 mt-1 border-l-2 border-blue-300 space-y-2">
                                             @foreach ($sub_pilars as $sub_pilar => $pertanyaans)
                                                 <div x-data="{ open: false }">
-                                                    <div @click="open = !open" class="w-full flex justify-between items-center py-2 cursor-pointer hover:bg-gray-50 rounded-md px-2">
+                                                    <div @click.stop="open = !open" class="w-full flex justify-between items-center py-2 cursor-pointer hover:bg-gray-50 rounded-md px-2">
                                                         <span class="italic text-gray-600 text-base">{{ $sub_pilar }}</span>
                                                         <svg class="w-5 h-5 transform transition-transform text-gray-500" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                                     </div>
@@ -74,7 +74,7 @@
                                                                 {{-- Kolom Aksi (lebar tetap) --}}
                                                                 <div class="flex items-center space-x-3 flex-shrink-0">
                                                                     {{-- Dropdown Petugas --}}
-                                                                    <div class="w-40">
+                                                                    <div class="w-40 sm:w-40">
                                                                         <select 
                                                                             wire:model.live="assignedPetugas.{{ $item->id }}"
                                                                             class="block w-full text-sm border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md"
@@ -88,99 +88,87 @@
                                                                     </div>
                                                                     
                                                                     {{-- Status Badge --}}
+                                                                        
                                                                     @if ($item->status == 'Terisi')
-                                                                        <div x-data="{ open: false }" class="relative">
-                                                                            <button 
-                                                                                @mouseenter="open = true" 
-                                                                                @mouseleave="open = false" 
-                                                                                @click="open = !open"
-                                                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 hover:bg-green-200 focus:outline-none">
-                                                                                Terisi
-                                                                            </button>
-
-                                                                            <div x-show="open"
-                                                                                x-transition
-                                                                                class="absolute z-50 -ml-4 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
-                                                                                
-                                                                                <ul class="space-y-1">
-                                                                                    {{-- Ambil data dari array $cachedFiles yang sudah kita siapkan --}}
-                                                                                    @forelse ($cachedFiles[$item->id] ?? [] as $file)
-                                                                                        <li class="flex items-center space-x-2 text-sm text-gray-600">
-                                                                                            <svg class="h-4 w-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0011.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-                                                                                            <a href="{{ $file['link'] }}" target="_blank" class="truncate hover:underline" title="{{ $file['name'] }}">
-                                                                                                {{ $file['name'] }}
-                                                                                            </a>
-                                                                                        </li>
-                                                                                    @empty
-                                                                                        <li class="text-sm text-gray-500 italic">
-                                                                                            (Folder ini kosong atau cache belum ter-update)
-                                                                                        </li>
-                                                                                    @endforelse
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>  
+                                                                    <button 
+                                                                        @click.prevent.stop="$dispatch('open-file-modal', { files: @js($cachedFiles[$item->id] ?? []) })"
+                                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 hover:bg-green-200 focus:outline-none">
+                                                                        Terisi
+                                                                    </button>
                                                                     @else
                                                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                                                             Kosong
                                                                         </span>
                                                                     @endif
                                                                     
-                                                                    @if($item->google_drive_folder_id)
-                                                                        {{-- Tombol Upload --}}
-                                                                        <a href="https://drive.google.com/drive/folders/{{ $item->google_drive_folder_id }}" target="_blank" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" title="Upload ke Drive">
-                                                                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
-                                                                        <path fill="#1e88e5" d="M38.59,39c-0.535,0.93-0.298,1.68-1.195,2.197C36.498,41.715,35.465,42,34.39,42H13.61 c-1.074,0-2.106-0.285-3.004-0.802C9.708,40.681,9.945,39.93,9.41,39l7.67-9h13.84L38.59,39z"></path><path fill="#fbc02d" d="M27.463,6.999c1.073-0.002,2.104-0.716,3.001-0.198c0.897,0.519,1.66,1.27,2.197,2.201l10.39,17.996 c0.537,0.93,0.807,1.967,0.808,3.002c0.001,1.037-1.267,2.073-1.806,3.001l-11.127-3.005l-6.924-11.993L27.463,6.999z"></path><path fill="#e53935" d="M43.86,30c0,1.04-0.27,2.07-0.81,3l-3.67,6.35c-0.53,0.78-1.21,1.4-1.99,1.85L30.92,30H43.86z"></path><path fill="#4caf50" d="M5.947,33.001c-0.538-0.928-1.806-1.964-1.806-3c0.001-1.036,0.27-2.073,0.808-3.004l10.39-17.996 c0.537-0.93,1.3-1.682,2.196-2.2c0.897-0.519,1.929,0.195,3.002,0.197l3.459,11.009l-6.922,11.989L5.947,33.001z"></path><path fill="#1565c0" d="M17.08,30l-6.47,11.2c-0.78-0.45-1.46-1.07-1.99-1.85L4.95,33c-0.54-0.93-0.81-1.96-0.81-3H17.08z"></path><path fill="#2e7d32" d="M30.46,6.8L24,18L17.53,6.8c0.78-0.45,1.66-0.73,2.6-0.79L27.46,6C28.54,6,29.57,6.28,30.46,6.8z"></path>
-                                                                        </svg>
-                                                                        </a>
-                                                                    
-                                                                        {{-- Tombol Copy Link --}}
-                                                                        <button wire:click="copyLink('{{ $item->google_drive_folder_id }}')" title="Copy Link">
-                                                                            <img class="h-6 w-6" src="https://img.icons8.com/ios/50/copy-link.png" alt="copy-link" />
-                                                                        </button>
+                                                                    {{-- Kebab Menu untuk Aksi Lainnya --}}
+                                                                        <div x-data="{ open: false }" class="relative">
+                                                                            {{-- Tombol Pemicu Kebab Menu --}}
+                                                                            <button @click="open = !open" @click.away="open = false" class="p-1.5 rounded-full hover:bg-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                                                <svg class="h-5 w-5" xmlns="http://www.w.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                                                    <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
+                                                                                </svg>
+                                                                            </button>
 
-                                                                        @script
-                                                                        <script>
-                                                                            $wire.on('copy-to-clipboard', ({ text }) => {
-                                                                                // Cek apakah Clipboard API didukung
-                                                                                if (navigator.clipboard) {
-                                                                                    navigator.clipboard.writeText(text).then(() => {
-                                                                                        console.log('Tautan berhasil disalin menggunakan Clipboard API!');
-                                                                                    }).catch(err => {
-                                                                                        console.error('Gagal menyalin:', err);
-                                                                                    });
-                                                                                } else {
-                                                                                    // Jika tidak didukung, gunakan fallback (metode lama)
-                                                                                    const textArea = document.createElement("textarea");
-                                                                                    textArea.value = text;
-                                                                                    textArea.style.position = "fixed";  // Hindari scroll
-                                                                                    textArea.style.top = "0";
-                                                                                    textArea.style.left = "-9999px"; // Posisikan di luar layar
-                                                                                    document.body.appendChild(textArea);
-                                                                                    textArea.focus();
-                                                                                    textArea.select();
-                                                                                    
-                                                                                    try {
-                                                                                        const successful = document.execCommand('copy');
-                                                                                        if (successful) {
-                                                                                            console.log('Tautan berhasil disalin menggunakan document.execCommand!');
-                                                                                        } else {
-                                                                                            console.error('Gagal menyalin menggunakan fallback.');
-                                                                                        }
-                                                                                    } catch (err) {
-                                                                                        console.error('Gagal menyalin:', err);
-                                                                                    }
-                                                                                    
-                                                                                    document.body.removeChild(textArea);
-                                                                                }
-                                                                            });
-                                                                        </script>
-                                                                        @endscript
-                                                                    @endif
+                                                                            {{-- Panel Dropdown Aksi --}}
+                                                                            <div 
+                                                                                x-show="open" 
+                                                                                x-transition 
+                                                                                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                                                                style="display: none;"
+                                                                                x-cloak
+                                                                                >
+                                                                                <div class="py-1" role="menu" aria-orientation="vertical">
+                                                                                    @if($item->google_drive_folder_id)
+                                                                                        <a href="https://drive.google.com/drive/folders/{{ $item->google_drive_folder_id }}" target="_blank" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Upload ke Drive</a>
+                                                                                        <button wire:click="copyLink('{{ $item->google_drive_folder_id }}')" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Copy Link</button>
+                                                                                        @script
+                                                                                            <script>
+                                                                                                $wire.on('copy-to-clipboard', ({ text }) => {
+                                                                                                    // Cek apakah Clipboard API didukung
+                                                                                                    if (navigator.clipboard) {
+                                                                                                        navigator.clipboard.writeText(text).then(() => {
+                                                                                                            console.log('Tautan berhasil disalin menggunakan Clipboard API!');
+                                                                                                        }).catch(err => {
+                                                                                                            console.error('Gagal menyalin:', err);
+                                                                                                        });
+                                                                                                    } else {
+                                                                                                        // Jika tidak didukung, gunakan fallback (metode lama)
+                                                                                                        const textArea = document.createElement("textarea");
+                                                                                                        textArea.value = text;
+                                                                                                        textArea.style.position = "fixed";  // Hindari scroll
+                                                                                                        textArea.style.top = "0";
+                                                                                                        textArea.style.left = "-9999px"; // Posisikan di luar layar
+                                                                                                        document.body.appendChild(textArea);
+                                                                                                        textArea.focus();
+                                                                                                        textArea.select();
+                                                                                                        
+                                                                                                        try {
+                                                                                                            const successful = document.execCommand('copy');
+                                                                                                            if (successful) {
+                                                                                                                console.log('Tautan berhasil disalin menggunakan document.execCommand!');
+                                                                                                            } else {
+                                                                                                                console.error('Gagal menyalin menggunakan fallback.');
+                                                                                                            }
+                                                                                                        } catch (err) {
+                                                                                                            console.error('Gagal menyalin:', err);
+                                                                                                        }
+                                                                                                        
+                                                                                                        document.body.removeChild(textArea);
+                                                                                                    }
+                                                                                                });
+                                                                                            </script>
+                                                                                            @endscript
+                                                                                    @endif
+                                                                                    <button wire:click="editKendala({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->kendala ? 'font-bold' : '' }}" role="menuitem">
+                                                                                        {{ $item->kendala ? 'Edit Kendala' : 'Tambah Kendala' }}
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
 
-                                                                    {{-- Tombol Kendala --}}
-                                                                    <button wire:click="editKendala({{ $item->id }})" class="p-2 rounded-md transition {{ $item->kendala ? 'bg-yellow-400 text-white hover:bg-yellow-500' : 'bg-gray-200 text-gray-600 hover:bg-gray-300' }}" title="Tambah/Edit Kendala">
-                                                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a1 1 0 0 0 0 2v3a1 1 0 0 0 1 1h1a1 1 0 1 0 0-2v-3a1 1 0 0 0-1-1H9Z" clip-rule="evenodd" /></svg>
-                                                                    </button>
+                                                                    <div>
+                                                                    </div>  
                                                                 </div>
                                                             </div>
                                                         @endforeach
@@ -228,7 +216,7 @@
         x-cloak
     >
         {{-- Latar Belakang dengan Efek Blur --}}
-        <div @click="$wire.closeKendalaModal()" class="fixed inset-0 bg-gray-900/25 backdrop-blur-sm transition-opacity"></div>
+        <div @click.stop="$wire.closeKendalaModal()" class="fixed inset-0 bg-gray-900/25 backdrop-blur-sm transition-opacity"></div>
 
         {{-- Konten Modal --}}
         <div class="relative w-full max-w-md bg-white rounded-xl shadow-2xl ring-1 ring-black ring-opacity-5">
@@ -267,6 +255,53 @@
                     </button>
                 </div>
             @endif
+        </div>
+    </div>
+    <div x-data="{ show: false, files: [] }"
+        x-show="show"
+        @open-file-modal.window="show = true; files = $event.detail.files"
+        @click.away="show = false"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+        style="display: none;">
+
+        {{-- Latar belakang --}}
+        <div class="fixed inset-0 bg-black/50"></div>
+
+        {{-- Konten pop-up --}}
+        <div class="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-sm sm:max-w-md max-h-[80vh] overflow-y-auto transform transition-all">
+            <div class="flex items-start justify-between">
+                <h3 class="text-xl font-bold text-gray-800">Daftar File</h3>
+                <button @click="show = false" class="text-gray-400 hover:text-gray-600 transition">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <p class="text-sm text-gray-500 mt-1 mb-4">File yang ditemukan di folder Google Drive.</p>
+
+            <ul class="space-y-2 divide-y divide-gray-200">
+                <template x-if="files.length > 0">
+                    <template x-for="file in files" :key="file.name">
+                        <li class="flex items-center space-x-2 pt-2 first:pt-0">
+                            <svg class="h-4 w-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0011.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            <a :href="file.link" target="_blank" class="truncate text-sm text-blue-600 hover:underline" :title="file.name" x-text="file.name"></a>
+                        </li>
+                    </template>
+                </template>
+                <template x-if="files.length === 0">
+                    <p class="text-sm text-gray-500 italic text-center py-4">
+                        (Folder ini kosong atau cache belum ter-update)
+                    </p>
+                </template>
+            </ul>
         </div>
     </div>
 </div>
