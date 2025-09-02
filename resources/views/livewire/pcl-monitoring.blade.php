@@ -3,7 +3,7 @@
 
         {{-- HEADER --}}
         <header class="mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 tracking-tight">Papan Pemantauan Progress PCL</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 tracking-tight">Dashboard Monitoring Petugas</h1>
             <p class="mt-2 text-lg text-gray-600">Zona Integritas BPS Kabupaten Nias</p>
         </header>
 
@@ -56,7 +56,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
-                            Nama Petugas (PCL)
+                            Nama Petugas 
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Progress Penyelesaian

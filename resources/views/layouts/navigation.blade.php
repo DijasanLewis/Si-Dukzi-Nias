@@ -19,7 +19,7 @@
                          <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h2a4 4 0 014 4v2m-10 0h12M5 17v-2a4 4 0 00-4-4H1a4 4 0 00-4 4v2m10 0h12" />
                         </svg>
-                        {{ __('Monitoring PCL') }}
+                        {{ __('Monitoring Petugas') }}
                     </x-nav-link>
                     {{-- Tampilkan tautan ini HANYA jika user adalah admin --}}
                     @if(auth()->user() && auth()->user()->is_admin)
@@ -94,7 +94,7 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home') || request()->routeIs('monitoring')">
-                {{ __('Monitoring PCL') }}
+                {{ __('Monitoring Petugas') }}
             </x-responsive-nav-link>
             @if(auth()->user() && auth()->user()->is_admin)
                 <x-responsive-nav-link :href="url('/admin')" :active="request()->is('admin*')">

@@ -78,33 +78,52 @@
 
                                                                 {{-- Kolom Aksi (lebar tetap) --}}
                                                                 <div class="flex flex-row items-center justify-between w-full sm:w-1/3">
-                                                                    {{-- Dropdown Petugas --}}
-                                                                    <div class="w-30 sm:w-40">
-                                                                        <select 
-                                                                            wire:model.live="assignedPetugas.{{ $item->id }}"
-                                                                            class="block w-full text-sm border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md"
-                                                                            title="Pilih Penanggung Jawab"
-                                                                        >
-                                                                            <option value="">-- PCL --</option>
-                                                                            @foreach($petugasList as $petugas)
-                                                                                <option value="{{ $petugas->id }}">{{ $petugas->nama }}</option>
-                                                                            @endforeach
-                                                                        </select>
+                                                                    {{-- Dropdown Petugas (untuk Admin) atau Nama Petugas (untuk non-admin) --}}
+                                                                    <div class="w-1/3 flex-1">
+                                                                        @if(auth()->user()->is_admin)
+                                                                            <select 
+                                                                                wire:model.live="assignedPetugas.{{ $item->id }}"
+                                                                                class="block w-full text-sm border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+                                                                                title="Pilih Petugas"
+                                                                            >
+                                                                                <option value="">-- Assign Petugas --</option>
+                                                                                @foreach($petugasList as $petugas)
+                                                                                    <option value="{{ $petugas->id }}">{{ $petugas->nama }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        @else
+                                                                            {{-- Tampilan untuk non-admin --}}
+                                                                            @if ($item->petugas)
+                                                                                <div class="px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg shadow-sm w-full">
+                                                                                    <p class="text-sm font-semibold text-indigo-800 truncate" title="{{ $item->petugas->nama }}">
+                                                                                        {{ $item->petugas->nama }}
+                                                                                    </p>
+                                                                                </div>
+                                                                            @else
+                                                                                <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded-lg shadow-sm w-full">
+                                                                                    <p class="text-sm italic text-gray-500">
+                                                                                        Belum di-assign
+                                                                                    </p>
+                                                                                </div>
+                                                                            @endif
+                                                                        @endif
                                                                     </div>
+
                                                                     
                                                                     {{-- Status Badge --}}
-                                                                        
-                                                                    @if ($item->status == 'Terisi')
-                                                                    <button 
-                                                                        @click.prevent.stop="$dispatch('open-file-modal', { files: @js($cachedFiles[$item->id] ?? []) })"
-                                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 hover:bg-green-200 focus:outline-none">
-                                                                        Terisi
-                                                                    </button>
-                                                                    @else
-                                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                                            Kosong
-                                                                        </span>
-                                                                    @endif
+                                                                    <div class="w-1/5 flex flex-col justify-between items-center mx-auto">
+                                                                        @if ($item->status == 'Terisi')
+                                                                        <button 
+                                                                            @click.prevent.stop="$dispatch('open-file-modal', { files: @js($cachedFiles[$item->id] ?? []) })"
+                                                                            class="justify-between items-center text-xs text-center leading-5 font-semibold rounded-full bg-green-100 text-green-800 hover:bg-green-200 focus:outline-none w-4/5">
+                                                                            Terisi
+                                                                        </button>
+                                                                        @else
+                                                                            <span class="justify-between items-center text-xs text-center leading-5 font-semibold rounded-full bg-red-100 text-red-800 w-4/5">
+                                                                                Kosong
+                                                                            </span>
+                                                                        @endif
+                                                                    </div>
                                                                     
                                                                     {{-- Kebab Menu untuk Aksi Lainnya --}}
                                                                         <div x-data="{ open: false }" class="relative">
