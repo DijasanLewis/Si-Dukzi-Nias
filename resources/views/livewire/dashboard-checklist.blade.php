@@ -1,29 +1,29 @@
 <div class="p-6 md:p-8 text-gray-900">
-    {{-- Judul dan Tombol Aksi --}}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-6 border-b border-gray-200">
-        <div>
+    {{-- Header Container --}}
+    <div class="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-6 pb-6 border-b border-gray-200">
+
+        {{-- Judul dan Sub-judul (Kiri di desktop, Tengah di mobile) --}}
+        <div class="text-center sm:text-left w-auto sm:w-2/3">
             <h3 class="text-2xl font-bold text-gray-800">Daftar Checklist Zona Integritas</h3>
-            <p class="text-base text-gray-500 mt-1">BPS Kabupaten Nias</p>
+            <p class="text-gray-500 mt-1">BPS Kabupaten Nias</p>
         </div>
-        <div class="flex flex-col items-end gap-2">
-            {{-- Tombol ini sekarang memanggil method 'syncStatus' di komponen Livewire --}}
-            <div class="flex justify-end items-end gap-2">
-                <button 
-                    type="button"
-                    wire:click="syncStatus"
-                    wire:loading.attr="disabled"
-                    class="mt-4 sm:mt-0 flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-lg transition duration-300 text-base shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-wait">
-                    
-                    {{-- Indikator Loading --}}
-                    <svg wire:loading wire:target="syncStatus" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                 
-                    <span>Update Status (Terisi/Kosong)</span>
-                </button>
-            </div>
-            <div>
+
+        {{-- Tombol dan Keterangan (Kanan di desktop, Tengah di mobile) --}}
+        <div class="w-auto sm:w-1/3 flex flex-col items-center sm:items-end mt-2 sm:mt-0 gap-2">
+            <button 
+                type="button"
+                wire:click="syncStatus"
+                wire:loading.attr="disabled"
+                class="w-full sm:w-auto flex justify-center sm:justify-end items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-lg transition duration-300 text-base shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-wait">
+                
+                <svg wire:loading wire:target="syncStatus" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            
+                <span>Update Status (Terisi/Kosong)</span>
+            </button>
+            <div class="text-center sm:text-right">
                 <p class="text-xs text-gray-500">
                     Update untuk memperbarui status dan isi folder dari Google Drive. Misalnya saat file diupload atau dihapus dari folder.
                 </p>
@@ -72,14 +72,14 @@
                                                     <div x-show="open" x-transition class="pl-4">
                                                         {{-- INI ADALAH PERULANGAN YANG MEMPERBAIKI ERROR --}}
                                                         @foreach ($pertanyaans as $item)
-                                                            <div class="flex flex-wrap items-center justify-between py-3 gap-4">
+                                                            <div class="flex flex-wrap flex-col sm:flex-row items-center justify-around py-3 gap-4">
                                                                 {{-- Kolom Pertanyaan (fleksibel) --}}
-                                                                <p class="text-gray-800 flex-1 min-w-0 pr-4">{{ $item->pertanyaan }}</p>
+                                                                <p class="text-gray-800 flex-1 w-full sm:w-3/4 pr-4 ">{{ $item->pertanyaan }}</p>
 
                                                                 {{-- Kolom Aksi (lebar tetap) --}}
-                                                                <div class="flex items-center space-x-3 flex-shrink-0">
+                                                                <div class="flex flex-row items-center justify-between w-full sm:w-1/3">
                                                                     {{-- Dropdown Petugas --}}
-                                                                    <div class="w-40 sm:w-40">
+                                                                    <div class="w-30 sm:w-40">
                                                                         <select 
                                                                             wire:model.live="assignedPetugas.{{ $item->id }}"
                                                                             class="block w-full text-sm border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md"
