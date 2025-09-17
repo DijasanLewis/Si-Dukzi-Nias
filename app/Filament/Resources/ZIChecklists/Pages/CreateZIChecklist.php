@@ -17,6 +17,34 @@ class CreateZIChecklist extends CreateRecord
      */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        // Logika Penggabungan Data dari Field Kondisional
+        
+        // Aspek
+        if ($data['aspek'] === 'other') {
+            $data['aspek'] = $data['aspek_other'];
+        }
+        unset($data['aspek_other']);
+
+        // Area
+        if ($data['area'] === 'other') {
+            $data['area'] = $data['area_other'];
+        }
+        unset($data['area_other']);
+
+        // Pilar
+        if ($data['pilar'] === 'other') {
+            $data['pilar'] = $data['pilar_other'];
+        }
+        unset($data['pilar_other']);
+
+        // Sub Pilar
+        if (isset($data['sub_pilar']) && $data['sub_pilar'] === 'other') {
+            $data['sub_pilar'] = $data['sub_pilar_other'];
+        }
+        unset($data['sub_pilar_other']);
+        
+        // Logika Pembuatan Folder Google Drive (sudah ada)
+        
         // 1. Panggil service kita
         $driveService = new GoogleDriveService();
 

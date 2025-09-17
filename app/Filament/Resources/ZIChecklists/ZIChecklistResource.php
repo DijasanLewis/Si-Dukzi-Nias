@@ -35,14 +35,79 @@ class ZIChecklistResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
+        // Ambil opsi yang ada dari database
+        $aspekOptions = ZIChecklist::distinct()->pluck('aspek', 'aspek');
+        $areaOptions = ZIChecklist::distinct()->pluck('area', 'area');
+        $pilarOptions = ZIChecklist::distinct()->pluck('pilar', 'pilar');
+        $subPilarOptions = ZIChecklist::distinct()->pluck('sub_pilar', 'sub_pilar');
+        
+        // Gabungkan opsi database dengan opsi 'Tambah Baru...'
+        $aspekSelectOptions = $aspekOptions->merge(['other' => 'Tambah Baru...']);
+        $areaSelectOptions = $areaOptions->merge(['other' => 'Tambah Baru...']);
+        $pilarSelectOptions = $pilarOptions->merge(['other' => 'Tambah Baru...']);
+        $subPilarSelectOptions = $subPilarOptions->merge(['other' => 'Tambah Baru...']);
+
         return $schema
-        ->schema([
-            // Kelompokkan field berdasarkan hirarki untuk kerapian
-            TextInput::make('aspek')->label('Aspek (misal: A. Pengungkit)')->required(),
-            TextInput::make('area')->label('Area (misal: I. Pemenuhan)')->required(),
-            TextInput::make('pilar')->label('Pilar (misal: 1. Manajemen Perubahan)')->required(),
-            TextInput::make('sub_pilar')->label('Sub Pilar (misal: i. Penyusunan Tim Kerja)')->required(),
-            
+            ->schema([
+                // Select untuk Aspek
+                Select::make('aspek')
+                    ->label('Aspek (misal: A. Pengungkit)')
+                    ->options($aspekSelectOptions)
+                    ->searchable()
+                    ->required()
+                    ->live(), // Penting: agar field di bawahnya bisa merespons
+                
+                // TextInput untuk Aspek (hanya muncul saat 'Tambah Baru...' dipilih)
+                TextInput::make('aspek_other')
+                    ->label('Tambah Aspek Baru')
+                    ->placeholder('Ketikkan aspek baru')
+                    ->required()
+                    ->visible(fn ($get) => $get('aspek') === 'other'),
+                
+                // Select untuk Area
+                Select::make('area')
+                    ->label('Area (misal: I. Pemenuhan)')
+                    ->options($areaSelectOptions)
+                    ->searchable()
+                    ->required()
+                    ->live(),
+                
+                // TextInput untuk Area
+                TextInput::make('area_other')
+                    ->label('Tambah Area Baru')
+                    ->placeholder('Ketikkan area baru')
+                    ->required()
+                    ->visible(fn ($get) => $get('area') === 'other'),
+                    
+                // Select untuk Pilar
+                Select::make('pilar')
+                    ->label('Pilar (misal: 1. Manajemen Perubahan)')
+                    ->options($pilarSelectOptions)
+                    ->searchable()
+                    ->required()
+                    ->live(),
+                
+                // TextInput untuk Pilar
+                TextInput::make('pilar_other')
+                    ->label('Tambah Pilar Baru')
+                    ->placeholder('Ketikkan pilar baru')
+                    ->required()
+                    ->visible(fn ($get) => $get('pilar') === 'other'),
+                    
+                // Select untuk Sub Pilar
+                Select::make('sub_pilar')
+                    ->label('Sub Pilar (misal: i. Penyusunan Tim Kerja)')
+                    ->options($subPilarSelectOptions)
+                    ->searchable()
+                    ->live(),
+                    
+                // TextInput untuk Sub Pilar
+                TextInput::make('sub_pilar_other')
+                    ->label('Tambah Sub Pilar Baru')
+                    ->placeholder('Ketikkan sub pilar baru')
+                    ->required()
+                    ->visible(fn ($get) => $get('sub_pilar') === 'other'),
+
             // Gunakan Textarea untuk deskripsi pertanyaan yang lebih panjang
             Textarea::make('pertanyaan')
                 ->label('Pertanyaan')

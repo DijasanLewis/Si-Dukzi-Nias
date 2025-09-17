@@ -31,34 +31,12 @@ class PetugasResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-        ->schema([
-            // Buat input teks untuk 'nama'
-            TextInput::make('nama')
-                ->required() // Wajib diisi
-                ->maxLength(255), // Panjang maksimal karakter
-        ]);
+        return PetugasForm::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-        ->columns([
-            // Tampilkan kolom 'nama' sebagai teks, dan buat bisa di-sort
-            TextColumn::make('nama')->sortable()->searchable(),
-        ])
-        ->filters([
-            // (Filter bisa kita tambahkan nanti)
-        ])
-        ->actions([
-            EditAction::make()->iconButton(),
-            DeleteAction::make(), // Tambahkan aksi hapus
-        ])
-        ->bulkActions([
-            BulkActionGroup::make([
-                DeleteBulkAction::make(),
-            ]),
-        ]);
+        return PetugasTable::configure($table);
     }
 
     public static function getRelations(): array
