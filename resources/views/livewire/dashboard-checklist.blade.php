@@ -32,12 +32,38 @@
     </div>
 
     {{-- FITUR PENCARIAN (Menggunakan Livewire) --}}
-    <div class="mb-6">
-        <input 
-            type="text" 
-            wire:model.live.debounce.300ms="search"
-            placeholder="Cari berdasarkan kata kunci..."
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        
+        {{-- Filter 1: Pilih Petugas (Dropdown) --}}
+        <div>
+            <select 
+                wire:model.live="selectedPetugas"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            >
+                <option value="">-- Semua Petugas --</option>
+                @foreach($petugasList as $petugas)
+                    <option value="{{ $petugas->id }}">{{ $petugas->nama }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        {{-- Filter 2: Cari Pemeriksa (Text Input) --}}
+        <div>
+            <input 
+                type="text" 
+                wire:model.live.debounce.300ms="searchPemeriksa"
+                placeholder="Cari Pemeriksa di Rencana Aksi..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        </div>
+
+        {{-- Filter 3: Pencarian Umum (yang sudah ada) --}}
+        <div>
+            <input 
+                type="text" 
+                wire:model.live.debounce.300ms="search"
+                placeholder="Cari berdasarkan kata kunci..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        </div>
     </div>
 
     {{-- STRUKTUR AKORDEON UTAMA --}}
@@ -137,17 +163,12 @@
                                                                             >
                                                                             <span
                                                                                 class="ml-2 font-medium text-xs transition-colors duration-200"
-                                                                                x-data="{ status: '{{ $item->status_pemeriksa }}' }"
-                                                                                x-init="status = '{{ $item->status_pemeriksa }}'"
                                                                                 x-bind:class="{
                                                                                     'text-green-800 bg-green-100 rounded-full px-2 py-0.5': $wire.statusPemeriksa[{{ $item->id }}],
-                                                                                    'text-red-800 bg-red-100 rounded-full px-2 py-0.5': !$wire.statusPemeriksa[{{ $item->id }}] && status !== '',
-                                                                                    'text-gray-800 bg-gray-100 rounded-full px-2 py-0.5': status === '',
+                                                                                    'text-red-800 bg-red-100 rounded-full px-2 py-0.5': !$wire.statusPemeriksa[{{ $item->id }}]
                                                                                 }"
                                                                             >
-                                                                                <span x-show="$wire.statusPemeriksa[{{ $item->id }}]">Sudah Lengkap</span>
-                                                                                <span x-show="!$wire.statusPemeriksa[{{ $item->id }}] && status !== ''">Belum Lengkap</span>
-                                                                                <span x-show="status === ''">Belum Diperiksa</span>
+                                                                                <span x-text="$wire.statusPemeriksa[{{ $item->id }}] ? 'Sudah Lengkap' : 'Belum Lengkap'"></span>
                                                                             </span>
                                                                         </label>
                                                                     </div>

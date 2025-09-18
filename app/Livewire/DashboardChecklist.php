@@ -20,6 +20,8 @@ use HighSolutions\LaravelSearchy\Facades\Searchy;
 class DashboardChecklist extends Component
 {
     public string $search = '';
+    public string $selectedPetugas = ''; 
+    public string $searchPemeriksa = ''; 
     public Collection $petugasList;
 
     // Properti ini akan menampung data kendala untuk setiap item
@@ -336,20 +338,34 @@ class DashboardChecklist extends Component
 
     public function render(): View
     {
-        $checklists = collect();
+        // 1. Mulai dengan query builder, bukan mengambil semua data langsung
+        $query = ZIChecklist::query();
+
+        // 2. Terapkan filter pencarian umum (menggantikan Searchy)
         if (!empty($this->search)) {
-            // MENGGUNAKAN FACADE SECARA LANGSUNG DENGAN NAMESPACE LENGKAP
-            $results = Searchy::search('z_i_checklists')
-                              ->fields(['pertanyaan', 'aspek', 'area', 'pilar', 'sub_pilar'])
-                              ->query($this->search)
-                              ->get();
-            
-            // Mendapatkan kembali koleksi model
-            $checklists = ZIChecklist::hydrate($results->toArray());
-        } else {
-            $checklists = ZIChecklist::all();
+            $query->where(function ($q) {
+                $q->where('pertanyaan', 'like', '%' . $this->search . '%')
+                ->orWhere('aspek', 'like', '%' . $this->search . '%')
+                ->orWhere('area', 'like', '%' . $this->search . '%')
+                ->orWhere('pilar', 'like', '%' . $this->search . '%')
+                ->orWhere('sub_pilar', 'like', '%' . $this->search . '%');
+            });
         }
 
+        // 3. Terapkan filter Petugas yang dipilih
+        if (!empty($this->selectedPetugas)) {
+            $query->where('petugas_id', $this->selectedPetugas);
+        }
+
+        // 4. Terapkan filter Pemeriksa di dalam kolom rencana_aksi
+        if (!empty($this->searchPemeriksa)) {
+            $query->where('rencana_aksi', 'like', '%' . $this->searchPemeriksa . '%');
+        }
+
+        // 5. Ambil hasil setelah semua filter diterapkan
+        $checklists = $query->get();
+
+        // 6. Kembalikan view dengan data yang sudah difilter dan dikelompokkan
         return view('livewire.dashboard-checklist', [
             'checklists' => $checklists->sortBy('id')->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']),
         ]);
