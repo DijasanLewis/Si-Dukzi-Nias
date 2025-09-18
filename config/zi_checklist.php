@@ -219,7 +219,7 @@ EOT,
             'rencana_aksi' => <<<EOT
 Uraian: Evaluasi prosedur operasional tetap/SOP 
 Output: Dokumen Monev SOP 
-Dokumen: i. Buki pelaksanaan rapat evaluasi SOP (Undangan, Daftar Hadir, Notulen); ii. Kertas kerja evaluasi SOP iii. Dokumen SOP awal dan SOP perbaikan [cite: 20, 21, 22, 23]
+Dokumen: i. Buki pelaksanaan rapat evaluasi SOP (Undangan, Daftar Hadir, Notulen); ii. Kertas kerja evaluasi SOP iii. Dokumen SOP awal dan SOP perbaikan 
 Tim Kerja Terkait: Pilar 2 
 Pemeriksa: Elvira 
 EOT,
@@ -233,7 +233,7 @@ EOT,
             'rencana_aksi' => <<<EOT
 Uraian: Penggunaan TI dalam sistem pengukuran kinerja 
 Output: Sistem pengukuran kinerja berbasis TI 
-Dokumen: i. Daftar seluruh penerapan teknologi informasi yang digunakan satker terkait pengukuran kinerja unit ii. Dokumen Screenshot aplikasi terkait pengukuran kinerja unit dan sudah berjalan iii. Inovasi dilengkapi dengan Laporan Pemanfaatan [cite: 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37]
+Dokumen: i. Daftar seluruh penerapan teknologi informasi yang digunakan satker terkait pengukuran kinerja unit ii. Dokumen Screenshot aplikasi terkait pengukuran kinerja unit dan sudah berjalan iii. Inovasi dilengkapi dengan Laporan Pemanfaatan 
 Tim Kerja Terkait: Tim Subbag Umum (Layanan Kepegawaian) 
 Pemeriksa: Yuris 
 EOT,
@@ -247,8 +247,8 @@ EOT,
             'rencana_aksi' => <<<EOT
 Uraian: Penggunaan TI dalam operasionalisasi manajemen SDM 
 Output: Operasionalisasi manajemen SDM berbasis TI 
-Dokumen: i. Daftar seluruh penerapan teknologi informasi yang digunakan satker terkait operasionalisasi manajemen SDM ii. Dokumen Screenshot aplikasi terkait operasionalisasi manajemen SDM dan sudah berjalan iii. Inovasi dilengkapi dengan Laporan Pemanfaatan Aplikasi [cite: 38, 39, 40, 41, 42, 43, 44, 45, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70]
-Tim Kerja Terkait: Tim Subbag Umum (Layanan Kepegawaian) [cite: 55, 59, 61]
+Dokumen: i. Daftar seluruh penerapan teknologi informasi yang digunakan satker terkait operasionalisasi manajemen SDM ii. Dokumen Screenshot aplikasi terkait operasionalisasi manajemen SDM dan sudah berjalan iii. Inovasi dilengkapi dengan Laporan Pemanfaatan Aplikasi 
+Tim Kerja Terkait: Tim Subbag Umum (Layanan Kepegawaian) 
 Pemeriksa: Yuris 
 EOT,
         ],
@@ -259,9 +259,9 @@ EOT,
             'sub_pilar' => 'ii. Sistem Pemerintahan Berbasis Elektronik (SPBE)',
             'pertanyaan' => 'c. Pemberian Pelayanan Kepada Publik Sudah Menggunakan Teknologi Informasi',
             'rencana_aksi' => <<<EOT
-Uraian: Penggunaan TI dalam pemberian layanan publik [cite: 83, 84]
+Uraian: Penggunaan TI dalam pemberian layanan publik 
 Output: Pemberian layanan publik berbasis TI 
-Dokumen: i. Daftar seluruh penerapan teknologi informasi yang digunakan satker terkait pemberian pelayanan publik ii. Dokumen Screenshot aplikasi terkait pelayanan publik dan sudah berjalan iii. Inovasi dilengkapi dengan Laporan Pemanfaatan Aplikasi [cite: 71, 72, 73, 74, 75, 76, 77, 78, 86, 87, 88, 89, 90, 91, 112, 113, 114, 116]
+Dokumen: i. Daftar seluruh penerapan teknologi informasi yang digunakan satker terkait pemberian pelayanan publik ii. Dokumen Screenshot aplikasi terkait pelayanan publik dan sudah berjalan iii. Inovasi dilengkapi dengan Laporan Pemanfaatan Aplikasi 
 Tim Kerja Terkait: Tim Diseminasi, Pengelolaan PST, dan Website (DIPWEB) 
 Pemeriksa: Yuris 
 EOT,
@@ -273,9 +273,9 @@ EOT,
             'sub_pilar' => 'ii. Sistem Pemerintahan Berbasis Elektronik (SPBE)',
             'pertanyaan' => 'd. Telah Dilakukan Monitoring Dan Evaluasi Terhadap Pemanfaatan Teknologi Informasi Dalam Pengukuran Kinerja Unit, Operasionalisasi SDM, Dan Pemberian Layanan Kepada Publik',
             'rencana_aksi' => <<<EOT
-Uraian: Telah dilakukan monitoring dan evaluasi terhadap pemanfaatan teknologi informasi dalam pengukuran kinerja unit, operasionalisasi SDM, dan pemberian layanan kepada publik [cite: 101, 102, 103, 104, 105, 106, 108, 109, 110]
-Output: Monev sistem informasi [cite: 107, 111]
-Dokumen: i. Laporan monitoring dan evaluasi pemanfaatan TI ii. Dokumentasi rapat monitoring dan evaluasi pemanfaatan TI [cite: 115, 117, 118, 119, 120, 121]
+Uraian: Telah dilakukan monitoring dan evaluasi terhadap pemanfaatan teknologi informasi dalam pengukuran kinerja unit, operasionalisasi SDM, dan pemberian layanan kepada publik 
+Output: Monev sistem informasi 
+Dokumen: i. Laporan monitoring dan evaluasi pemanfaatan TI ii. Dokumentasi rapat monitoring dan evaluasi pemanfaatan TI 
 Tim Kerja Terkait: Tim Subbag Umum, dan Tim Diseminasi, Pengelolaan PST, dan Website (DIPWEB) 
 Pemeriksa: Yuris 
 EOT,
@@ -287,9 +287,9 @@ EOT,
             'sub_pilar' => 'iii. Keterbukaan Informasi Publik',
             'pertanyaan' => 'a. Kebijakan Tentang Keterbukaan Informasi Publik Telah Diterapkan',
             'rencana_aksi' => <<<EOT
-Uraian: Penerapan kebijakan tentang keterbukaan informasi publik [cite: 144, 145, 146, 147]
-Output: Layanan Informasi publik [cite: 153, 159]
-Dokumen: i. SK PPID 2025 ii. Daftar informasi publik satker yang dapat diakses iii. Screen shot media pengelolaan informasi publik satker. [cite: 154, 155, 156, 157, 158, 162, 163, 164]
+Uraian: Penerapan kebijakan tentang keterbukaan informasi publik 
+Output: Layanan Informasi publik 
+Dokumen: i. SK PPID 2025 ii. Daftar informasi publik satker yang dapat diakses iii. Screen shot media pengelolaan informasi publik satker. 
 Tim Kerja Terkait: Tim PPID, dan Tim Diseminasi, Pengelolaan PST, dan Website (DIPWEB) 
 Pemeriksa: Yuris 
 EOT,
@@ -301,8 +301,8 @@ EOT,
             'sub_pilar' => 'iii. Keterbukaan Informasi Publik',
             'pertanyaan' => 'b. Telah Dilakukan Monitoring Dan Evaluasi Pelaksanaan Kebijakan Keterbukaan Informasi Publik',
             'rencana_aksi' => <<<EOT
-Uraian: Monitoring penerapan kebijakan tentang keterbukaan informasi publik [cite: 148, 149, 150, 151, 152]
-Output: Monev Kehumasan [cite: 160, 161]
+Uraian: Monitoring penerapan kebijakan tentang keterbukaan informasi publik 
+Output: Monev Kehumasan 
 Dokumen: Laporan berkala monitoring dan evaluasi pelaksanaan kebijakan keterbukaan informasi publik dan bukti tindak lanjutnya 
 Tim Kerja Terkait: Tim PPID, Tim Diseminasi, Pengelolaan PST, dan Website (DIPWEB) 
 Pemeriksa: Yuris 
@@ -315,9 +315,9 @@ EOT,
             'sub_pilar' => 'i. Perencanaan Kebutuhan Pegawai Sesuai Dengan Kebutuhan Organisasi',
             'pertanyaan' => 'a. Kebutuhan Pegawai Yang Disusun Oleh Unit Kerja Mengacu Kepada Peta Jabatan Dan Hasil Analisis Beban Kerja Untuk Masing-Masing Jabatan',
             'rencana_aksi' => <<<EOT
-Uraian: Menyusun kebutuhan pegawai yang mengacu kepada peta jabatan dan hasil analisis beban kerja untuk masing-masing jabatan [cite: 182, 183, 184, 185]
-Output: Kebutuhan pegawai berdasarkan peta jabatan dan hasil analisis beban kerja [cite: 186, 187, 188, 189]
-Dokumen: Kebutuhan pegawai berdasarkan peta jabatan dan hasil analisis beban kerja [cite: 190, 191, 192, 193]
+Uraian: Menyusun kebutuhan pegawai yang mengacu kepada peta jabatan dan hasil analisis beban kerja untuk masing-masing jabatan 
+Output: Kebutuhan pegawai berdasarkan peta jabatan dan hasil analisis beban kerja 
+Dokumen: Kebutuhan pegawai berdasarkan peta jabatan dan hasil analisis beban kerja 
 Tim Kerja Terkait: Subbag Umum (Layanan Kepegawaian) 
 Pemeriksa: Yuris 
 EOT,
@@ -736,8 +736,8 @@ EOT,
             'pertanyaan' => 'b. Pengendalian Gratifikasi Telah Diimplementasikan',
             'rencana_aksi' => <<<EOT
 Uraian: Implementasi pengendalian gratifikasi 
-Output: Laporan pengendalian gratifikasi [cite: 207, 208, 209, 210]
-Dokumen: 1 SK penetapan Unit Pengendalian Gratifikasi (UPG); 2. Laporan Rekapitulasi Penanganan Gratifikasi (Semesteran sesuaiPMK-227/PMK.09/2021); 3. Laporan Profiling Pegawai & Laporan tindak lanjut (jika ada ketidakwajaran) 4. Rencana Kerja dan Laporan/Output pelaksanaan tugas UPG 5. Pakta Integritas Internal (Pimpinan) dan Eksternal 6. Komitmen Anti Gratifikasi di internal unit kerja [cite: 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240]
+Output: Laporan pengendalian gratifikasi 
+Dokumen: 1 SK penetapan Unit Pengendalian Gratifikasi (UPG); 2. Laporan Rekapitulasi Penanganan Gratifikasi (Semesteran sesuaiPMK-227/PMK.09/2021); 3. Laporan Profiling Pegawai & Laporan tindak lanjut (jika ada ketidakwajaran) 4. Rencana Kerja dan Laporan/Output pelaksanaan tugas UPG 5. Pakta Integritas Internal (Pimpinan) dan Eksternal 6. Komitmen Anti Gratifikasi di internal unit kerja 
 Tim Kerja Terkait: Tim Pilar 5
 Pemeriksa: Kartika 
 EOT,
@@ -751,7 +751,7 @@ EOT,
             'rencana_aksi' => <<<EOT
 Uraian: Pembangunan lingkungan pengendalian 
 Output: Lingkungan pengendalian 
-Dokumen: 1. Kode Etik Pegawai 2. ND/notulensi/dokumentasi terkait Pimpinan menjadi Role Model) 3. Struktur Organisasi 4. Analisis Jabatan 5. ND mutasi pegawai dan analisis mutasi internal pegawai 6. Laporan Koordinasi 7. ND terkait inovasi pengendalian internal yang bersifat kearifan lokal [cite: 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267]
+Dokumen: 1. Kode Etik Pegawai 2. ND/notulensi/dokumentasi terkait Pimpinan menjadi Role Model) 3. Struktur Organisasi 4. Analisis Jabatan 5. ND mutasi pegawai dan analisis mutasi internal pegawai 6. Laporan Koordinasi 7. ND terkait inovasi pengendalian internal yang bersifat kearifan lokal 
 Tim Kerja Terkait: Tim PIPP 
 Pemeriksa: Kartika 
 EOT,
@@ -765,7 +765,7 @@ EOT,
             'rencana_aksi' => <<<EOT
 Uraian: Penilaian risiko atas pelaksanaan kebijakan 
 Output: Laporan Manajemen Risiko 
-Dokumen: Perwujudan peran aparat 1. Piagam Manajemen Risiko 2. Penetapan Konteks Manajemen Risiko 3. Formulir Profil Risiko dan Peta Risiko 4. Konsep Rencana Penanganan Risiko 5. Formulir Pemantauan Triwulanan laporan pemantauan profil risiko (triwulanan) 6. Manual Indikator Risiko Utama (IRU) 7. SK pimpinan unit kerja tentang pembentukan Tim pengelola risiko. 8. ND Inovasi terkait penilaian risiko sesuai karakteristik unit kerja [cite: 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296]
+Dokumen: Perwujudan peran aparat 1. Piagam Manajemen Risiko 2. Penetapan Konteks Manajemen Risiko 3. Formulir Profil Risiko dan Peta Risiko 4. Konsep Rencana Penanganan Risiko 5. Formulir Pemantauan Triwulanan laporan pemantauan profil risiko (triwulanan) 6. Manual Indikator Risiko Utama (IRU) 7. SK pimpinan unit kerja tentang pembentukan Tim pengelola risiko. 8. ND Inovasi terkait penilaian risiko sesuai karakteristik unit kerja 
 Tim Kerja Terkait: Tim PIPP 
 Pemeriksa: Kartika 
 EOT,
@@ -777,9 +777,9 @@ EOT,
             'sub_pilar' => 'ii. Penerapan Sistem Pengawasan Internal Pemerintah (SPIP)',
             'pertanyaan' => 'c. Telah Dilakukan Kegiatan Pengendalian Untuk Meminimalisir Risiko Yang Telah Diidentifikasi',
             'rencana_aksi' => <<<EOT
-Uraian: Pengendalian risiko Lingkungan pengendalian Laporan Manajemen Risiko [cite: 309, 310, 312, 318, 319, 321]
-Output: Kegiatan pengendalian untuk meminimalisir risiko [cite: 313, 317]
-Dokumen: 1. laporan Profil Risiko 2. laporan pemantauan profil risiko 3. ND Inovasi terkait penilaian risiko sesuai karakteristik unit kerja [cite: 297, 298, 314, 316, 322, 323, 324, 325]
+Uraian: Pengendalian risiko Lingkungan pengendalian Laporan Manajemen Risiko 
+Output: Kegiatan pengendalian untuk meminimalisir risiko 
+Dokumen: 1. laporan Profil Risiko 2. laporan pemantauan profil risiko 3. ND Inovasi terkait penilaian risiko sesuai karakteristik unit kerja 
 Tim Kerja Terkait: Tim PIPP 
 Pemeriksa: Kartika 
 EOT,
@@ -1353,7 +1353,7 @@ EOT,
             'rencana_aksi' => <<<EOT
 Uraian: Transformasi digital pada bidang administrasi pemerintahan 
 Output: Nilai manfaat bagi unit kerja secara optimal 
-Dokumen: 1. Narasi alasan perubahan metode pencacahan dari PAPI menjadi CAPI ii. Buku Pedoman penggunaan PAPI dan CAPI pada kegiatan Survei Angkatan Kerja Nasional (Sakernas) iii. Surat edaran BPS Pusat terkait pencacahan menggunakan CAPI iv. Screen shot pemanfaatan CAPI pada berbagai survei v. Dokumen evaluasi atas transformasi digital PAPI ke CAPI [cite: 338, 339]
+Dokumen: 1. Narasi alasan perubahan metode pencacahan dari PAPI menjadi CAPI ii. Buku Pedoman penggunaan PAPI dan CAPI pada kegiatan Survei Angkatan Kerja Nasional (Sakernas) iii. Surat edaran BPS Pusat terkait pencacahan menggunakan CAPI iv. Screen shot pemanfaatan CAPI pada berbagai survei v. Dokumen evaluasi atas transformasi digital PAPI ke CAPI 
 Tim Kerja Terkait: Tim Kerja Terkait 
 Pemeriksa: Hamdan 
 EOT,

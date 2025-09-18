@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Exports\ChecklistExport;
 use App\Models\Petugas;
 use App\Models\ZIChecklist;
 use Filament\Notifications\Notification;
@@ -16,6 +17,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Exception;
 use HighSolutions\LaravelSearchy\Facades\Searchy;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardChecklist extends Component
 {
@@ -369,5 +371,9 @@ class DashboardChecklist extends Component
         return view('livewire.dashboard-checklist', [
             'checklists' => $checklists->sortBy('id')->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']),
         ]);
+    }
+    public function export()
+    {
+        return Excel::download(new ChecklistExport, '1201_Rencana Kerja BPS 1201_'.date('Y-m-d').'.xlsx');
     }
 }
