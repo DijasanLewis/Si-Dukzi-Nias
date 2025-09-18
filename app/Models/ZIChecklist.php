@@ -30,7 +30,10 @@ class ZIChecklist extends Model
         'status',
         'petugas_id',
         'kendala',
-        'kendala_updated_at'
+        'kendala_updated_at',
+        'status_pemeriksa',
+        'catatan_pemeriksa',
+        'timestamp_catatan_pemeriksa'
     ];
 
     /**
@@ -41,6 +44,7 @@ class ZIChecklist extends Model
     protected $casts = [
         // Memberitahu Laravel untuk memperlakukan kolom ini sebagai objek Carbon (Tanggal & Waktu)
         'kendala_updated_at' => 'datetime', 
+        'timestamp_catatan_pemeriksa' => 'datetime',
     ];
 
     public function petugas(): BelongsTo

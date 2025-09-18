@@ -37,6 +37,12 @@ class DashboardChecklist extends Component
     public ?ZIChecklist $editingRencanaAksi = null;
     public string $rencanaAksiText = '';
 
+    // Untuk pemeriksa
+    public array $statusPemeriksa = [];
+    public array $catatanPemeriksa = [];
+    public ?ZIChecklist $editingCatatanPemeriksa = null;
+    public string $catatanPemeriksaText = '';
+
     // Untuk fitur ambil daftar nama file dari google drive
     public array $cachedFiles = [];
 
@@ -51,6 +57,8 @@ class DashboardChecklist extends Component
             $this->kendala[$item->id] = $item->kendala;
             $this->rencanaAksi[$item->id] = $item->rencana_aksi;
             $this->assignedPetugas[$item->id] = $item->petugas_id;
+            $this->statusPemeriksa[$item->id] = ($item->status_pemeriksa === 'Sudah Lengkap');
+            $this->catatanPemeriksa[$item->id] = $item->catatan_pemeriksa;
         }
 
         // Muat cache saat komponen pertama kali dijalankan
@@ -199,6 +207,66 @@ class DashboardChecklist extends Component
 
         // Kirim event untuk menutup modal di sisi frontend
         $this->dispatch('close-rencana-aksi-modal');
+    }
+
+    public function updatedStatusPemeriksa($value, $checklistId): void
+    {
+        $checklist = ZIChecklist::find($checklistId);
+        if ($checklist) {
+            // Jika nilai checkbox adalah 'on', ubah status menjadi 'Sudah Lengkap' atau default
+            $newStatus = $value ? 'Sudah Lengkap' : 'Belum Lengkap';  
+            $timestamp = Carbon::now();
+
+            // Perbarui kolom 'status_pemeriksa' di database
+            $checklist->update([
+                'status_pemeriksa' => $newStatus,
+                'timestamp_catatan_pemeriksa' => $timestamp,
+            ]);
+
+            // Perbarui properti di komponen Livewire agar UI reaktif
+            $this->statusPemeriksa[$checklistId] = $value;
+
+            Notification::make()
+                ->title('Status Pemeriksa Diperbarui')
+                ->body('Status checklist berhasil diperbarui.')
+                ->success()
+                ->send();
+        }
+    }
+
+    public function editCatatanPemeriksa(int $checklistId): void
+    {
+        $this->editingCatatanPemeriksa = ZIChecklist::find($checklistId);
+        $this->catatanPemeriksaText = $this->editingCatatanPemeriksa?->catatan_pemeriksa ?? '';
+
+        $this->dispatch('open-catatan-modal');
+    }
+
+    public function saveCatatanPemeriksa(): void
+    {
+        if ($this->editingCatatanPemeriksa) {
+            $timestamp = !empty($this->catatanPemeriksaText) ? Carbon::now() : null;
+
+            $this->editingCatatanPemeriksa->update([
+                'catatan_pemeriksa' => $this->catatanPemeriksaText,
+                'timestamp_catatan_pemeriksa' => $timestamp,
+            ]);
+
+            $this->catatanPemeriksa[$this->editingCatatanPemeriksa->id] = $this->catatanPemeriksaText;
+
+            Notification::make()
+                ->title('Catatan Pemeriksa berhasil disimpan')
+                ->success()
+                ->send();
+        }
+
+        $this->closeCatatanPemeriksaModal();
+    }
+
+    public function closeCatatanPemeriksaModal(): void
+    {
+        $this->reset('editingCatatanPemeriksa', 'catatanPemeriksaText');
+        $this->dispatch('close-catatan-modal');
     }
 
     #[On('checklist-updated')]

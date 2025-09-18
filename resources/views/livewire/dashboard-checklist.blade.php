@@ -124,6 +124,33 @@
                                                                             </span>
                                                                         @endif
                                                                     </div>
+
+                                                                    {{-- Kolom Status Pemeriksa (Checkbox) --}}
+                                                                    <div class="flex-shrink-0 flex flex-col items-center justify-center">
+                                                                        <label for="checker-{{ $item->id }}" class="flex items-center cursor-pointer">
+                                                                            <input 
+                                                                                type="checkbox" 
+                                                                                id="checker-{{ $item->id }}" 
+                                                                                wire:model.live="statusPemeriksa.{{ $item->id }}"
+                                                                                class="form-checkbox h-5 w-5 rounded-full cursor-pointer transition duration-150 ease-in-out"
+                                                                                x-bind:class="{ 'text-green-600': $wire.statusPemeriksa[{{ $item->id }}], 'text-red-600': !$wire.statusPemeriksa[{{ $item->id }}] }"
+                                                                            >
+                                                                            <span
+                                                                                class="ml-2 font-medium text-xs transition-colors duration-200"
+                                                                                x-data="{ status: '{{ $item->status_pemeriksa }}' }"
+                                                                                x-init="status = '{{ $item->status_pemeriksa }}'"
+                                                                                x-bind:class="{
+                                                                                    'text-green-800 bg-green-100 rounded-full px-2 py-0.5': $wire.statusPemeriksa[{{ $item->id }}],
+                                                                                    'text-red-800 bg-red-100 rounded-full px-2 py-0.5': !$wire.statusPemeriksa[{{ $item->id }}] && status !== '',
+                                                                                    'text-gray-800 bg-gray-100 rounded-full px-2 py-0.5': status === '',
+                                                                                }"
+                                                                            >
+                                                                                <span x-show="$wire.statusPemeriksa[{{ $item->id }}]">Sudah Lengkap</span>
+                                                                                <span x-show="!$wire.statusPemeriksa[{{ $item->id }}] && status !== ''">Belum Lengkap</span>
+                                                                                <span x-show="status === ''">Belum Diperiksa</span>
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
                                                                     
                                                                     {{-- Kebab Menu untuk Aksi Lainnya --}}
                                                                         <div x-data="{ open: false }" class="relative">
@@ -144,7 +171,7 @@
                                                                                 >
                                                                                 <div class="py-1" role="menu" aria-orientation="vertical">
                                                                                     @if($item->google_drive_folder_id)
-                                                                                        <a href="https://drive.google.com/drive/folders/{{ $item->google_drive_folder_id }}" target="_blank" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Upload ke Drive</a>
+                                                                                        <a href="https://drive.google.com/drive/folders/{{ $item->google_drive_folder_id }}" target="_blank" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Buka Google Drive</a>
                                                                                         <button wire:click="copyLink('{{ $item->google_drive_folder_id }}')" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Copy Link</button>
                                                                                         @script
                                                                                             <script>
@@ -184,13 +211,17 @@
                                                                                             </script>
                                                                                             @endscript
                                                                                     @endif
-                                                                                    {{-- Tombol untuk Kendala --}}
-                                                                                    <button wire:click="editKendala({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->kendala ? 'font-bold' : '' }}" role="menuitem">
-                                                                                        {{ $item->kendala ? 'Edit Kendala' : 'Tambah Kendala' }}
-                                                                                    </button>
                                                                                     {{-- Tombol untuk Rencana Aksi --}}
                                                                                     <button wire:click="editRencanaAksi({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->rencana_aksi ? 'font-bold' : '' }}" role="menuitem">
-                                                                                        {{ $item->rencana_aksi ? 'Edit Rencana Aksi' : 'Tambah Rencana Aksi' }}
+                                                                                        {{ $item->rencana_aksi ? 'Rencana Aksi (Edit)' : '+ Rencana Aksi' }}
+                                                                                    </button>
+                                                                                    {{-- Tombol untuk Kendala --}}
+                                                                                    <button wire:click="editKendala({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->kendala ? 'font-bold' : '' }}" role="menuitem">
+                                                                                        {{ $item->kendala ? 'Catatan Petugas (Edit)' : '+ Catatan Petugas' }}
+                                                                                    </button>
+                                                                                    {{-- Tombol untuk Catatan Pemeriksa --}}
+                                                                                    <button wire:click="editCatatanPemeriksa({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->catatan_pemeriksa ? 'font-bold' : '' }}" role="menuitem">
+                                                                                        {{ $item->catatan_pemeriksa ? 'Catatan Pemeriksa (Edit)' : '+ Catatan Pemeriksa' }}
                                                                                     </button>
                                                                                 </div>
                                                                             </div>
@@ -353,6 +384,74 @@
             @endif
         </div>
     </div>
+    {{-- MODAL UNTUK CATATAN PEMERIKSA --}}
+    <div
+        x-data="{ show: false }"
+        x-show="show"
+        @open-catatan-modal.window="show = true"
+        @close-catatan-modal.window="show = false"
+        x-transition:enter="ease-out duration-0"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="ease-in duration-0"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-start justify-end p-4 sm:p-6"
+        style="display: none;"
+        x-cloak
+    >
+        {{-- Latar Belakang --}}
+        <div @click.stop="$wire.closeCatatanPemeriksaModal()" class="fixed inset-0 bg-gray-900/25 backdrop-blur-sm transition-opacity"></div>
+
+        {{-- Konten Modal --}}
+        <div class="relative w-full max-w-md bg-white rounded-xl shadow-2xl ring-1 ring-black ring-opacity-5">
+            @if ($editingCatatanPemeriksa)
+                <div class="p-5">
+                    <p class="text-sm font-medium text-gray-500">
+                        Catatan untuk:
+                    </p>
+                    <h3 class="mt-1 text-base font-semibold text-gray-900">
+                        {{ $editingCatatanPemeriksa->pertanyaan }}
+                    </h3>
+
+                    @if ($editingCatatanPemeriksa->timestamp_catatan_pemeriksa)
+                        <p class="mt-2 text-xs text-gray-400">
+                            Terakhir diperbarui: 
+                            <span class="font-medium text-gray-500">
+                                {{ $editingCatatanPemeriksa->timestamp_catatan_pemeriksa->format('d F Y, H:i') }}
+                            </span>
+                        </p>
+                    @endif
+
+                    <textarea 
+                        wire:model="catatanPemeriksaText" 
+                        rows="5" 
+                        class="mt-4 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition" 
+                        placeholder="Tuliskan catatan di sini..."
+                    ></textarea>
+                </div>
+
+                {{-- Footer dengan Tombol Aksi --}}
+                <div class="bg-gray-50 px-5 py-3 flex justify-end items-center space-x-3 rounded-b-xl">
+                    <button 
+                        type="button" 
+                        wire:click="closeCatatanPemeriksaModal" 
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Batal
+                    </button>
+                    <button 
+                        type="button" 
+                        wire:click="saveCatatanPemeriksa" 
+                        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Simpan
+                    </button>
+                </div>
+            @endif
+        </div>
+    </div>
+
     <div x-data="{ show: false, files: [] }"
         x-show="show"
         @open-file-modal.window="show = true; files = $event.detail.files"

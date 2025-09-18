@@ -147,6 +147,20 @@ EOT)
                 ->label('Catatan/Kendala')
                 ->columnSpanFull()
                 ->hidden(fn (string $operation): bool => $operation === 'create'),
+            
+            Select::make('status_pemeriksa')
+                ->label('Status Pemeriksa')
+                ->options([
+                    'Sudah Lengkap' => 'Sudah Lengkap',
+                    'Belum Lengkap' => 'Belum Lengkap',
+                ])
+                ->required()
+                ->hidden(fn (string $operation): bool => $operation === 'create'),
+
+            Textarea::make('catatan_pemeriksa')
+                ->label('Catatan Pemeriksa')
+                ->columnSpanFull()
+                ->hidden(fn (string $operation): bool => $operation === 'create')
         ]);
     }
 
