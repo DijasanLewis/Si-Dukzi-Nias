@@ -114,6 +114,19 @@ class ZIChecklistResource extends Resource
                 ->required()
                 ->columnSpanFull(), // Agar field ini memanjang penuh
 
+            // Gunakan Textarea untuk deskripsi pertanyaan yang lebih panjang
+            Textarea::make('rencana_aksi')
+                ->label('Rencana Aksi')
+                ->placeholder(<<<EOT
+Uraian: Penyusunan Tim Kerja ZI Tahun 2025 
+Output: Tim kerja Pembangunan ZI 
+Dokumen: SK Tim Kerja ZI 
+Tim Kerja Terkait: Tim Pilar 1 
+Pemeriksa: Evita 
+EOT)
+                ->required()
+                ->columnSpanFull(), // Agar field ini memanjang penuh
+
             // TextInput::make('google_drive_folder_id')->label('ID Folder Google Drive')->required(),
 
             // Select dropdown untuk memilih status
@@ -122,7 +135,7 @@ class ZIChecklistResource extends Resource
                     'Kosong' => 'Kosong',
                     'Terisi' => 'Terisi',
                 ])
-                ->required(),
+                ->hidden(fn (string $operation): bool => $operation === 'create'),
 
             // Select dropdown untuk menugaskan petugas (PCL)
             Select::make('petugas_id')
@@ -132,7 +145,8 @@ class ZIChecklistResource extends Resource
 
             Textarea::make('kendala')
                 ->label('Catatan/Kendala')
-                ->columnSpanFull(),
+                ->columnSpanFull()
+                ->hidden(fn (string $operation): bool => $operation === 'create'),
         ]);
     }
 

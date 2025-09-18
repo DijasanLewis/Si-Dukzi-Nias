@@ -25,11 +25,17 @@ class DashboardChecklist extends Component
     // Properti ini akan menampung data kendala untuk setiap item
     public array $kendala = [];
 
+    // Properti ini akan menampung data rencana aksi untuk setiap item
+    public array $rencanaAksi = [];
+
     // Properti ini akan menampung data petugas_id untuk setiap item
     public array $assignedPetugas = [];
 
     public ?ZIChecklist $editingKendala = null;
     public string $kendalaText = '';
+
+    public ?ZIChecklist $editingRencanaAksi = null;
+    public string $rencanaAksiText = '';
 
     // Untuk fitur ambil daftar nama file dari google drive
     public array $cachedFiles = [];
@@ -43,6 +49,7 @@ class DashboardChecklist extends Component
         $checklists = ZIChecklist::all();
         foreach ($checklists as $item) {
             $this->kendala[$item->id] = $item->kendala;
+            $this->rencanaAksi[$item->id] = $item->rencana_aksi;
             $this->assignedPetugas[$item->id] = $item->petugas_id;
         }
 
@@ -139,6 +146,59 @@ class DashboardChecklist extends Component
 
         // Kirim event untuk menutup modal di sisi frontend
         $this->dispatch('close-kendala-modal');
+    }
+
+    /**
+     * "Magic method" yang akan dipanggil setiap kali textarea rencana aksi diubah.
+     */
+    public function updatedRencanaAksi($rencanaAksiText, $checklistId): void
+    {
+        $checklist = ZIChecklist::find($checklistId);
+        if ($checklist) {
+            $checklist->update(['rencana_aksi' => $rencanaAksiText]);
+        }
+    }
+
+    /**
+     * Membuka modal dan mengirim event ke browser.
+     */
+    public function editRencanaAksi(int $checklistId): void
+    {
+        $this->editingRencanaAksi = ZIChecklist::find($checklistId);
+        $this->rencanaAksiText = $this->editingRencanaAksi?->rencana_aksi ?? '';
+        
+        // Kirim event untuk membuka modal di sisi frontend
+        $this->dispatch('open-rencana-aksi-modal');
+    }
+
+    /**
+     * Menyimpan data rencana aksi dan mengirim event untuk menutup modal.
+     */
+    public function saveRencanaAksi(): void
+    {
+        if ($this->editingRencanaAksi) {
+            $this->editingRencanaAksi->update([
+                'rencana_aksi' => $this->rencanaAksiText,
+            ]);
+            $this->rencanaAksi[$this->editingRencanaAksi->id] = $this->rencanaAksiText;
+            
+            Notification::make()
+                ->title('Rencana Aksi berhasil disimpan')
+                ->success()
+                ->send();
+        }
+        $this->closeRencanaAksiModal();
+    }
+
+    /**
+     * Menutup modal, mereset properti, dan mengirim event ke browser.
+     */
+    public function closeRencanaAksiModal(): void
+    {
+        $this->reset('editingRencanaAksi', 'rencanaAksiText');
+
+        // Kirim event untuk menutup modal di sisi frontend
+        $this->dispatch('close-rencana-aksi-modal');
     }
 
     #[On('checklist-updated')]

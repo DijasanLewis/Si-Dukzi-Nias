@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\ZIChecklist;
+use Illuminate\Support\Facades\Config;
 
 class MigrateChecklistData extends Command
 {
@@ -28,7 +30,7 @@ class MigrateChecklistData extends Command
         $this->info('Memulai checklist data migration...');
 
         // Ambil data dari config
-        $checklists = Config::get('zi_checklist');
+        $checklists = Config::get('zi_checklist.data');
 
         foreach ($checklists as $item) {
             // Gunakan updateOrCreate untuk menghindari duplikasi jika command dijalankan lagi
@@ -41,6 +43,7 @@ class MigrateChecklistData extends Command
                     'area' => $item['area'],
                     'pilar' => $item['pilar'],
                     'sub_pilar' => $item['sub_pilar'],
+                    'rencana_aksi' => $item['rencana_aksi'],
                 ]
             );
         }

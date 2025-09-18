@@ -184,8 +184,13 @@
                                                                                             </script>
                                                                                             @endscript
                                                                                     @endif
+                                                                                    {{-- Tombol untuk Kendala --}}
                                                                                     <button wire:click="editKendala({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->kendala ? 'font-bold' : '' }}" role="menuitem">
                                                                                         {{ $item->kendala ? 'Edit Kendala' : 'Tambah Kendala' }}
+                                                                                    </button>
+                                                                                    {{-- Tombol untuk Rencana Aksi --}}
+                                                                                    <button wire:click="editRencanaAksi({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->rencana_aksi ? 'font-bold' : '' }}" role="menuitem">
+                                                                                        {{ $item->rencana_aksi ? 'Edit Rencana Aksi' : 'Tambah Rencana Aksi' }}
                                                                                     </button>
                                                                                 </div>
                                                                             </div>
@@ -283,6 +288,63 @@
                     <button 
                         type="button" 
                         wire:click="saveKendala" 
+                        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Simpan
+                    </button>
+                </div>
+            @endif
+        </div>
+    </div>
+    <div
+        x-data="{ show: false }"
+        x-show="show"
+        @open-rencana-aksi-modal.window="show = true"
+        @close-rencana-aksi-modal.window="show = false"
+        x-transition:enter="ease-out duration-0"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="ease-in duration-0"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-start justify-end p-4 sm:p-6"
+        style="display: none;"
+        x-cloak
+    >
+        {{-- Latar Belakang --}}
+        <div @click.stop="$wire.closeRencanaAksiModal()" class="fixed inset-0 bg-gray-900/25 backdrop-blur-sm transition-opacity"></div>
+
+        {{-- Konten Modal --}}
+        <div class="relative w-full max-w-md bg-white rounded-xl shadow-2xl ring-1 ring-black ring-opacity-5">
+            @if ($editingRencanaAksi)
+                <div class="p-5">
+                    <p class="text-sm font-medium text-gray-500">
+                        Rencana Aksi untuk:
+                    </p>
+                    <h3 class="mt-1 text-base font-semibold text-gray-900">
+                        {{ $editingRencanaAksi->pertanyaan }}
+                    </h3>
+
+                    <textarea 
+                        wire:model="rencanaAksiText" 
+                        rows="5" 
+                        class="mt-4 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition" 
+                        placeholder="Tuliskan rencana aksi di sini..."
+                    ></textarea>
+                </div>
+
+                {{-- Footer dengan Tombol Aksi --}}
+                <div class="bg-gray-50 px-5 py-3 flex justify-end items-center space-x-3 rounded-b-xl">
+                    <button 
+                        type="button" 
+                        wire:click="closeRencanaAksiModal" 
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Batal
+                    </button>
+                    <button 
+                        type="button" 
+                        wire:click="saveRencanaAksi" 
                         class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Simpan

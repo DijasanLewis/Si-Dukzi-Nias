@@ -25,6 +25,7 @@ class ZIChecklist extends Model
         'pilar',
         'sub_pilar',
         'pertanyaan',
+        'rencana_aksi',
         'google_drive_folder_id',
         'status',
         'petugas_id',
