@@ -44,7 +44,7 @@ class MigrateChecklistData extends Command
                     'pilar' => $item['pilar'],
                     'sub_pilar' => $item['sub_pilar'],
                     'rencana_aksi' => $item['rencana_aksi'],
-                    'petugas_id'=> $item['petugas_id'],
+                    'petugas_id'=> $item['petugas_id'] ?? NULL,
                 ]
             );
         }

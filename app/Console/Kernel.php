@@ -17,11 +17,11 @@ class Kernel extends ConsoleKernel
     {
         // 1. Jalankan sinkronisasi status folder setiap hari pada jam 2 pagi.
         // Ini akan memperbarui status "Kosong" / "Terisi".
-        $schedule->command('sync:drivestatus')->dailyAt('02:00');
+        // $schedule->command('sync:drivestatus')->dailyAt('02:00');
 
         // 2. Jalankan caching daftar file setiap jam.
         // Ini akan mengambil daftar file dari folder yang statusnya sudah "Terisi".
-        $schedule->command('cache:drivefiles')->hourly();
+        // $schedule->command('cache:drivefiles')->hourly();
     }
 
     /**

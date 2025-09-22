@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PetugasSeeder::class,
             UserSeeder::class,
+            ZIDriveSeeder::class,
         ]);
     }
 }

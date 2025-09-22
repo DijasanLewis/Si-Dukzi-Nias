@@ -11,12 +11,14 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Membuat satu user admin secara manual
-        User::create([
+        User::firstOrCreate(
+            ['email' => 'admin@gmail.com'], // Kondisi pencarian
+            [
             'name' => 'Admin',
-            'email' => 'admin@gmail.com',
             'password' => Hash::make('admin123'),
             'is_admin' => true,
-        ]);
+            ]
+        );
 
         // Membuat 10 user biasa dengan factory
         User::factory(10)->create([

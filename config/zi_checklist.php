@@ -879,7 +879,7 @@ EOT,
 Uraian: Tindaklanjut pengaduan masyarakat
 Output: Tindaklanjut pengaduan masyarakat
 Dokumen: Laporan kegiatan pengelolaan pengaduan
-Tim Kerja Terkait: TIM PPID
+Tim Kerja Terkait: TIM PPIDm 
 Pemeriksa: Kartika
 EOT,
             'petugas_id' => 6,
