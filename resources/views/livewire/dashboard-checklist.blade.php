@@ -4,7 +4,7 @@
 
         {{-- Judul dan Sub-judul (Kiri di desktop, Tengah di mobile) --}}
         <div class="text-center sm:text-left w-auto sm:w-2/3">
-            <h3 class="text-2xl font-bold text-gray-800">Daftar Checklist Zona Integritas</h3>
+            <h3 class="text-2xl font-bold text-gray-800">Pembangunan Zona Integritas</h3>
             <p class="text-gray-500 mt-1">BPS Kabupaten Nias</p>
         </div>
 
@@ -21,7 +21,7 @@
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
             
-                <span>Update Status (Terisi/Kosong)</span>
+                <span>Sinkronisasi Drive</span>
             </button>
             <div class="text-center sm:text-right">
                 <p class="text-xs text-gray-500">
@@ -82,7 +82,7 @@
     </div>
 
     {{-- STRUKTUR AKORDEON UTAMA --}}
-    <div class="space-y-4">
+    <div class="space-y-4 mb-20">
         @forelse ($checklists as $aspek => $areas)
             <div x-data="{ open: true }" class="border border-gray-300 rounded-xl shadow-sm transition-shadow hover:shadow-md">
                 <div @click.stop="open = !open" class="w-full flex justify-between items-center p-4 cursor-pointer bg-gray-100 rounded-t-xl hover:bg-gray-200">
@@ -201,7 +201,7 @@
                                                                             <div 
                                                                                 x-show="open" 
                                                                                 x-transition 
-                                                                                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                                                                class="absolute right-0 z-[9999] mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                                                                 style="display: none;"
                                                                                 x-cloak
                                                                                 >

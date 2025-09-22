@@ -3,16 +3,22 @@
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400">
             <div class="text-center md:text-left mb-4 md:mb-0">
-                <p class="font-semibold">SI-DUKZI v2.0</p>
+                <p class="font-semibold">SI-DUKZI NIAS v1.0</p>
                 <p>&copy; {{ date('Y') }} BPS Kabupaten Nias. All Rights Reserved.</p>
+                <p class="mt-1">Developed by: Yedija Lewi Suryadi</p>
             </div>
-            <div class="flex items-center space-x-4">
-                <a href="https://nias.bps.go.id" target="_blank" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
-                    Website BPS Nias
+            <div class="grid grid-cols-2 gap-2">
+                <a href="https://niaskab.bps.go.id/" target="_blank" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                    Website BPS Kabupaten Nias
                 </a>
-                <span>|</span>
                 <a href="{{ route('home') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
-                    Papan Monitoring
+                    Halaman Monitoring Petugas
+                </a>
+                <a href="http://s.bps.go.id/siga" target="_blank" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                    SIGA
+                </a>
+                <a href="https://docs.google.com/spreadsheets/d/1Adk7V5fZgojxAJGkODQvUyxXgSmbIJzrDJ-VlUzpKQk/edit?usp=sharing" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                    Rencana Kerja ZI 2025
                 </a>
             </div>
         </div>

@@ -6,7 +6,6 @@ use App\Filament\Resources\Petugas\Pages\CreatePetugas;
 use App\Filament\Resources\Petugas\Pages\EditPetugas;
 use App\Filament\Resources\Petugas\Pages\ListPetugas;
 use App\Filament\Resources\Petugas\Schemas\PetugasForm;
-use App\Filament\Resources\Petugas\Tables\PetugasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
