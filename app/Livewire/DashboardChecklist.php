@@ -50,6 +50,7 @@ class DashboardChecklist extends Component
     // Untuk fitur ambil daftar nama file dari google drive
     public array $cachedFiles = [];
 
+    public $initialDataLoaded = false;
     public function mount(): void
     {
         // Muat daftar petugas sekali saat komponen diinisialisasi
@@ -67,6 +68,8 @@ class DashboardChecklist extends Component
 
         // Muat cache saat komponen pertama kali dijalankan
         $this->refreshCachedFiles();
+
+        $this->initialDataLoaded = true;
     }
 
     /**

@@ -14,10 +14,34 @@
 
         <link rel="stylesheet" href="{{ asset('css/filament/filament/app.css') }}" />
         <script src="{{ asset('js/filament/filament/app.js') }}" defer></script>
-
         @filamentStyles
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased" x-data="{ loading: true }"
+        x-init="
+            const livewireReady = new Promise(resolve => {
+                window.addEventListener('livewire:initialized', () => resolve());
+            });
+
+            const minimumTimePassed = new Promise(resolve => {
+                setTimeout(() => resolve(), 1000); // Tunggu minimal 1000ms (1 detik)
+            });
+
+            Promise.all([livewireReady, minimumTimePassed]).then(() => {
+                loading = false;
+            });
+        "
+    >
+        <div
+            x-show="loading"
+            x-transition:leave.duration.500ms
+            class="fixed inset-0 z-[999] flex items-center justify-center bg-gray-900/90 text-white"
+        >
+            <div class="flex flex-col items-center">
+                <img src="{{ Vite::asset('resources/images/LogoBPS2Asset 3.png') }}" alt="Logo" class="w-100 animate-pulse">
+
+                <p class="mt-4 text-xl">Loading...</p>
+            </div>
+        </div>
         <div class="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
             @include('layouts.navigation')
 

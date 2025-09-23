@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
     // });
 
     // Rute untuk migrasi (JANGAN LUPA DIHAPUS SETELAH SELESAI)
-    Route::get('/migrate-drive', [ZIController::class, 'migrateDriveStructure']);
+    // Route::get('/migrate-drive', [ZIController::class, 'migrateDriveStructure']);
     //Route::get('/sync', [ZIController::class, 'syncStatus'])->name('zi.sync');
 
     // Rute profil bawaan Breeze
@@ -33,10 +33,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // UNTUK TESTING
-    Route::get('/jalankan-tes-migrasi-drive', function () {
-        // Panggil method controller yang akan kita buat nanti
-        return app(\App\Http\Controllers\ZIController::class)->testMigrateDriveStructure();
-    })->middleware('auth'); // Lindungi dengan auth agar hanya user yang login bisa akses
+    // Route::get('/jalankan-tes-migrasi-drive', function () {
+    //     // Panggil method controller yang akan kita buat nanti
+    //     return app(\App\Http\Controllers\ZIController::class)->testMigrateDriveStructure();
+    // })->middleware('auth'); // Lindungi dengan auth agar hanya user yang login bisa akses
 
 });
 
