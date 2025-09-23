@@ -13,11 +13,14 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log; // Import Log facade
 use Illuminate\Support\Facades\Cache; // Import Cache facade
 use Illuminate\View\View;
+use App\Services\CacheService; // Import CacheService
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Exception;
 use HighSolutions\LaravelSearchy\Facades\Searchy;
 use Maatwebsite\Excel\Facades\Excel;
+use Livewire\WithPagination;
+
 
 class DashboardChecklist extends Component
 {
@@ -294,7 +297,7 @@ class DashboardChecklist extends Component
             ->send();
     }
 
-    public function syncStatus(): void
+    public function syncStatus(CacheService $cacheService): void
     {
         Log::info('Memulai proses sinkronisasi status folder via tombol.');
 
@@ -321,10 +324,8 @@ class DashboardChecklist extends Component
             }
 
             // logika untuk menjalankan proses caching.
-            // Buat instance dari command CacheDriveFiles
-            $cacheCommand = new \App\Console\Commands\CacheDriveFiles();
-            // Jalankan method handle-nya untuk caching
-            $cacheCommand->handle();
+            // Panggil method dari service yang baru dibuat
+            $cacheService->cacheDriveFiles();
             Log::info('Proses caching file Google Drive selesai.');
 
             Notification::make()
