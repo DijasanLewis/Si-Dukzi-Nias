@@ -297,7 +297,7 @@ class DashboardChecklist extends Component
             ->send();
     }
 
-    public function syncStatus(CacheService $cacheService): void
+    public function syncStatus(CacheService $cacheService)
     {
         Log::info('Memulai proses sinkronisasi status folder via tombol.');
 
@@ -338,6 +338,7 @@ class DashboardChecklist extends Component
             
             // Memberi tahu komponen untuk me-refresh dirinya sendiri. Ini sudah benar.
             $this->dispatch('checklist-updated');
+            return redirect()->route('dashboard');
 
         } catch (Exception $e) {
             Log::error('Sinkronisasi Gagal: ' . $e->getMessage());
