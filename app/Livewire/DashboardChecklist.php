@@ -320,6 +320,13 @@ class DashboardChecklist extends Component
                 }
             }
 
+            // logika untuk menjalankan proses caching.
+            // Buat instance dari command CacheDriveFiles
+            $cacheCommand = new \App\Console\Commands\CacheDriveFiles();
+            // Jalankan method handle-nya untuk caching
+            $cacheCommand->handle();
+            Log::info('Proses caching file Google Drive selesai.');
+
             Notification::make()
                 ->title('Sinkronisasi Berhasil')
                 ->body('Status semua folder telah diperbarui sesuai kondisi di Google Drive.')

@@ -82,7 +82,8 @@
     </div>
 
     {{-- STRUKTUR AKORDEON UTAMA --}}
-    <div class="space-y-4 mb-20">
+    <div class="space-y-4 mb-36">
+        {{-- PERULANGAN UNTUK ASPEK --}}
         @forelse ($checklists as $aspek => $areas)
             <div x-data="{ open: true }" class="border border-gray-300 rounded-xl shadow-sm transition-shadow hover:shadow-md">
                 <div @click.stop="open = !open" class="w-full flex justify-between items-center p-4 cursor-pointer bg-gray-100 rounded-t-xl hover:bg-gray-200">
@@ -118,9 +119,9 @@
                                                                 <p class="text-gray-800 flex-1 w-full sm:w-3/4 pr-4 ">{{ $item->pertanyaan }}</p>
 
                                                                 {{-- Kolom Aksi (lebar tetap) --}}
-                                                                <div class="flex flex-row items-center justify-between w-full sm:w-1/3">
+                                                                <div class="items-center justify-between w-full sm:w-1/3 grid grid-cols-10 gap-2 place-content-center">
                                                                     {{-- Dropdown Petugas (untuk Admin) atau Nama Petugas (untuk non-admin) --}}
-                                                                    <div class="w-1/3 flex-1">
+                                                                    <div class="col-span-10">
                                                                         @if(auth()->user()->is_admin)
                                                                             <select 
                                                                                 wire:model.live="assignedPetugas.{{ $item->id }}"
@@ -152,7 +153,7 @@
 
                                                                     
                                                                     {{-- Status Badge --}}
-                                                                    <div class="w-1/5 flex flex-col justify-between items-center mx-auto">
+                                                                    <div class="justify-between items-center mx-auto col-span-3">
                                                                         @if ($item->status == 'Terisi')
                                                                         <button 
                                                                             @click.prevent.stop="$dispatch('open-file-modal', { files: @js($cachedFiles[$item->id] ?? []) })"
@@ -167,7 +168,7 @@
                                                                     </div>
 
                                                                     {{-- Kolom Status Pemeriksa (Checkbox) --}}
-                                                                    <div class="flex-shrink-0 flex flex-col items-center justify-center">
+                                                                    <div class="items-center justify-center col-span-6">
                                                                         <label for="checker-{{ $item->id }}" class="flex items-center cursor-pointer">
                                                                             <input 
                                                                                 type="checkbox" 
