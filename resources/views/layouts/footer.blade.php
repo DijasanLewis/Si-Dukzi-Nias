@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400">
             <div class="text-center md:text-left mb-4 md:mb-0">
-                <p class="font-semibold">SI-DUKZI NIAS v1.0</p>
+                <p class="font-semibold">SIDATA ZI BPS NIAS v1.0</p>
                 <p>&copy; {{ date('Y') }} BPS Kabupaten Nias. All Rights Reserved.</p>
                 <p class="mt-1">Developed by: Yedija Lewi Suryadi</p>
             </div>

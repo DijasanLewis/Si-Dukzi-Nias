@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'SI-DUKZI') }}</title>
+        <title>{{ config('app.name', 'SIDATA ZI') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -38,8 +38,7 @@
             class="fixed inset-0 z-[999] flex items-center justify-center bg-gray-900/90 text-white"
         >
             <div class="flex flex-col items-center">
-                <img src="{{ Vite::asset('resources/images/LogoBPS2Asset 3.png') }}" alt="Logo" class="w-100 animate-pulse">
-
+                <img src="{{ asset('images/SIDATA-ZI.png') }}" alt="Logo" class="w-100 animate-pulse">
                 <p class="mt-4 text-xl">Loading...</p>
             </div>
         </div>

@@ -1,15 +1,22 @@
 <div class="p-6 md:p-8 text-gray-900">
     {{-- Header Container --}}
-    <div class="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-6 pb-6 border-b border-gray-200">
+    <div class="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-6 pb-6 border-b border-gray-200 w-3/4 sm:w-full">
 
         {{-- Judul dan Sub-judul (Kiri di desktop, Tengah di mobile) --}}
-        <div class="text-center sm:text-left w-auto sm:w-2/3">
-            <h3 class="text-2xl font-bold text-gray-800">Pembangunan Zona Integritas</h3>
-            <p class="text-gray-500 mt-1">BPS Kabupaten Nias</p>
+        <div class="flex flex-col justify-between sm:justify-center sm:text-left w-full sm:w-2/3">
+            <h3 class="text-2xl font-bold text-gray-800 w-full text-center sm:text-left">Pembangunan Zona Integritas</h3>
+            <p class="text-gray-500 mt-1 w-full text-center sm:text-left">BPS Kabupaten Nias</p>
+            
+            <a href="https://docs.google.com/spreadsheets/d/1Adk7V5fZgojxAJGkODQvUyxXgSmbIJzrDJ-VlUzpKQk/edit?usp=sharing" class="flex w-full">
+                <button type="button"
+                    class="w-full sm:w-auto flex justify-center items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-lg transition duration-300 text-base shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-wait">
+                    <span>Sheet Rencana Kerja ZI</span>
+                </button>
+            </a>
         </div>
 
         {{-- Tombol dan Keterangan (Kanan di desktop, Tengah di mobile) --}}
-        <div class="w-auto sm:w-1/3 flex flex-col items-center sm:items-end mt-2 sm:mt-0 gap-2">
+        <div class="w-full sm:w-1/3 flex flex-col items-center sm:items-end mt-2 sm:mt-0 gap-2">
             <button 
                 type="button"
                 wire:click="syncStatus"
@@ -23,9 +30,12 @@
             
                 <span>Sinkronisasi Drive</span>
             </button>
-            <div class="text-center sm:text-right">
+            <div class="text-center sm:text-righ w-fullt">
                 <p class="text-xs text-gray-500">
-                    Update untuk memperbarui status dan isi folder dari Google Drive. Misalnya saat file diupload atau dihapus dari folder.
+                    Sinkronisasi untuk memperbarui status dan isi folder dari Google Drive.
+                </p>
+                <p class="text-xs text-gray-500">
+                    Misalnya saat mengupload dan menghapus file.
                 </p>
             </div>
             {{-- TOMBOL EXPORT EXCEL BARU --}}
@@ -161,14 +171,14 @@
                                                                             Terisi
                                                                         </button>
                                                                         @else
-                                                                            <span class="justify-between items-center text-xs text-center leading-5 font-semibold rounded-full bg-red-100 text-red-800 w-4/5">
+                                                                            <span class="justify-between items-center text-xs text-center leading-5 font-semibold rounded-full px-2 py-0.5 bg-red-100 text-red-800 w-4/5">
                                                                                 Kosong
                                                                             </span>
                                                                         @endif
                                                                     </div>
 
                                                                     {{-- Kolom Status Pemeriksa (Checkbox) --}}
-                                                                    <div class="items-center justify-center col-span-6">
+                                                                    <div class="items-center justify-center col-span-5">
                                                                         <label for="checker-{{ $item->id }}" class="flex items-center cursor-pointer">
                                                                             <input 
                                                                                 type="checkbox" 
@@ -190,9 +200,9 @@
                                                                     </div>
                                                                     
                                                                     {{-- Kebab Menu untuk Aksi Lainnya --}}
-                                                                        <div x-data="{ open: false }" class="relative">
+                                                                        <div x-data="{ open: false }" class="relative col-span-2">
                                                                             {{-- Tombol Pemicu Kebab Menu --}}
-                                                                            <button @click="open = !open" @click.away="open = false" class="p-1.5 rounded-full hover:bg-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                                            <button @click="open = !open" @click.away="open = false" class="items-center justify-center p-1.5 rounded-full hover:bg-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                                                                 <svg class="h-5 w-5" xmlns="http://www.w.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                                                     <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
                                                                                 </svg>

@@ -61,6 +61,6 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 =======
-# Si-Dukzi-Nias
-SI-DUKZI adalah aplikasi berbasis web yang dirancang khusus untuk menjadi pusat kendali dalam proses pengumpulan, pengelolaan, dan pemantauan bukti dukung ZI di lingkungan BPS Kabupaten Nias
+# SIDATA-ZI-Nias
+SIDATA ZI adalah aplikasi berbasis web yang dirancang khusus untuk menjadi pusat kendali dalam proses pengumpulan, pengelolaan, dan pemantauan bukti dukung ZI di lingkungan BPS Kabupaten Nias
 >>>>>>> 0f8eb0e36389bef89dde092a2218cb01c17d2464

@@ -5,12 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'SI-DUKZI') }} - Monitoring</title>
+        <title>{{ config('app.name', 'SIDATA ZI') }} - Monitoring</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <link rel="icon" href="{{ asset('images/logo_bps.png') }}" type="image/png">
+        <link rel="icon" href="{{ asset('images/SIDATA-ZI.png') }}" type="image/png">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
@@ -23,7 +23,7 @@
                                 <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                             </a>
                             <h1 class="text-lg font-semibold text-gray-700 dark:text-gray-300 hidden sm:block">
-                                SI-DUKZI BPS Kabupaten Nias
+                                SIDATA ZI BPS Kabupaten Nias
                             </h1>
                         </div>
 

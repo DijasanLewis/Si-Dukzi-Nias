@@ -108,6 +108,6 @@ class ZIController extends Controller
             }
         }
 
-        return "<b>UJI COBA SELESAI.</b> Periksa folder 'SI-DUKZI - TESTING' di Google Drive Anda. Tidak ada data yang diubah di database produksi.";
+        return "<b>UJI COBA SELESAI.</b> Periksa folder 'SIDATA - ZI - TESTING' di Google Drive Anda. Tidak ada data yang diubah di database produksi.";
     }
 }
