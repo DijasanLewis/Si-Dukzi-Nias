@@ -52,6 +52,7 @@ class DashboardChecklist extends Component
 
     // Untuk fitur ambil daftar nama file dari google drive
     public array $cachedFiles = [];
+    public array $texts = [];
 
     public $initialDataLoaded = false;
     public function mount(): void
@@ -62,11 +63,13 @@ class DashboardChecklist extends Component
         // Inisialisasi properti kendala dan petugas dari data yang ada di database
         $checklists = ZIChecklist::all();
         foreach ($checklists as $item) {
-            $this->kendala[$item->id] = $item->kendala;
-            $this->rencanaAksi[$item->id] = $item->rencana_aksi;
             $this->assignedPetugas[$item->id] = $item->petugas_id;
             $this->statusPemeriksa[$item->id] = ($item->status_pemeriksa === 'Sudah Lengkap');
-            $this->catatanPemeriksa[$item->id] = $item->catatan_pemeriksa;
+            $this->texts[$item->id] = [
+                'rencana_aksi'      => $item->rencana_aksi,
+                'kendala'           => $item->kendala,
+                'catatan_pemeriksa' => $item->catatan_pemeriksa,
+            ];
         }
 
         // Muat cache saat komponen pertama kali dijalankan
@@ -217,6 +220,41 @@ class DashboardChecklist extends Component
 
         // Kirim event untuk menutup modal di sisi frontend
         $this->dispatch('close-rencana-aksi-modal');
+    }
+
+    public function saveDetails(int $checklistId): void
+    {
+        $checklist = ZIChecklist::find($checklistId);
+
+        if ($checklist) {
+            $dataToUpdate = [
+                'rencana_aksi'      => $this->texts[$checklistId]['rencana_aksi'] ?? null,
+                'kendala'           => $this->texts[$checklistId]['kendala'] ?? null,
+                'catatan_pemeriksa' => $this->texts[$checklistId]['catatan_pemeriksa'] ?? null,
+            ];
+
+            // Update timestamp jika field tidak kosong
+            if (!empty($dataToUpdate['kendala'])) {
+                $dataToUpdate['kendala_updated_at'] = Carbon::now();
+            }
+            if (!empty($dataToUpdate['catatan_pemeriksa'])) {
+                $dataToUpdate['timestamp_catatan_pemeriksa'] = Carbon::now();
+            }
+
+            $checklist->update($dataToUpdate);
+
+            Notification::make()
+                ->title('Detail berhasil disimpan!')
+                ->body("Perubahan untuk item checklist telah tersimpan di database.")
+                ->success()
+                ->send();
+        } else {
+            Notification::make()
+                ->title('Gagal menyimpan')
+                ->body("Checklist dengan ID {$checklistId} tidak ditemukan.")
+                ->danger()
+                ->send();
+        }
     }
 
     public function updatedStatusPemeriksa($value, $checklistId): void

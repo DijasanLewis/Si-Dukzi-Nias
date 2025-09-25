@@ -124,158 +124,100 @@
                                                     <div x-show="open" x-transition class="pl-4">
                                                         {{-- INI ADALAH PERULANGAN YANG MEMPERBAIKI ERROR --}}
                                                         @foreach ($pertanyaans as $item)
-                                                            <div class="flex flex-wrap flex-col sm:flex-row items-center justify-around py-3 gap-4">
-                                                                {{-- Kolom Pertanyaan (fleksibel) --}}
-                                                                <p class="text-gray-800 flex-1 w-full sm:w-3/4 pr-4 ">{{ $item->pertanyaan }}</p>
-
-                                                                {{-- Kolom Aksi (lebar tetap) --}}
-                                                                <div class="items-center justify-between w-full sm:w-1/3 grid grid-cols-10 gap-2 place-content-center">
-                                                                    {{-- Dropdown Petugas (untuk Admin) atau Nama Petugas (untuk non-admin) --}}
-                                                                    <div class="col-span-10">
-                                                                        @if(auth()->user()->is_admin)
-                                                                            <select 
-                                                                                wire:model.live="assignedPetugas.{{ $item->id }}"
-                                                                                class="block w-full text-sm border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
-                                                                                title="Pilih Petugas"
-                                                                            >
-                                                                                <option value="">-- Assign Petugas --</option>
-                                                                                @foreach($petugasList as $petugas)
-                                                                                    <option value="{{ $petugas->id }}">{{ $petugas->nama }}</option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        @else
-                                                                            {{-- Tampilan untuk non-admin --}}
-                                                                            @if ($item->petugas)
-                                                                                <div class="px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg shadow-sm w-full">
-                                                                                    <p class="text-sm font-semibold text-indigo-800 truncate" title="{{ $item->petugas->nama }}">
-                                                                                        {{ $item->petugas->nama }}
-                                                                                    </p>
-                                                                                </div>
+                                                            <div x-data="{ open: false }" class="border-b border-gray-200 last:border-b-0" wire:key="item-{{ $item->id }}">
+                                                                
+                                                                {{-- ============================ AWAL PERUBAHAN ============================ --}}
+                                                                {{-- 1. Seluruh baris ini sekarang menjadi tombol pemicu akordeon --}}
+                                                                <div @click="open = !open" class="flex flex-wrap flex-col sm:flex-row items-center justify-between gap-4 cursor-pointer hover:bg-gray-100 rounded-lg p-2 -m-2">
+                                                                    
+                                                                    {{-- Teks Pertanyaan --}}
+                                                                    <p class="text-gray-800 flex-1">{{ $item->pertanyaan }}</p>
+                                                                    
+                                                                    {{-- Kolom Aksi Cepat (disebelah kanan) --}}
+                                                                    <div class="flex items-center justify-end gap-3 flex-shrink-0 w-full sm:w-auto">
+                                                                        
+                                                                        {{-- Petugas --}}
+                                                                        <div @click.stop class="w-40"> {{-- @click.stop agar akordeon tidak toggle saat dropdown diklik --}}
+                                                                            @if(auth()->user()->is_admin)
+                                                                                <select wire:model.live="assignedPetugas.{{ $item->id }}" class="block w-full text-sm border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out" title="Pilih Petugas">
+                                                                                    <option value="">-- Assign Petugas --</option>
+                                                                                    @foreach($petugasList as $petugas)
+                                                                                        <option value="{{ $petugas->id }}">{{ $petugas->nama }}</option>
+                                                                                    @endforeach
+                                                                                </select>
                                                                             @else
-                                                                                <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded-lg shadow-sm w-full">
-                                                                                    <p class="text-sm italic text-gray-500">
-                                                                                        Belum di-assign
-                                                                                    </p>
-                                                                                </div>
+                                                                                @if ($item->petugas)
+                                                                                    <div class="px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg shadow-sm w-full"><p class="text-sm font-semibold text-indigo-800 truncate" title="{{ $item->petugas->nama }}">{{ $item->petugas->nama }}</p></div>
+                                                                                @else
+                                                                                    <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded-lg shadow-sm w-full"><p class="text-sm italic text-gray-500">Belum di-assign</p></div>
+                                                                                @endif
                                                                             @endif
-                                                                        @endif
+                                                                        </div>
+                                                                        
+                                                                        {{-- Status Badge (Folder) --}}
+                                                                        <div class="flex-shrink-0">
+                                                                            @if ($item->status == 'Terisi')
+                                                                                <button @click.prevent.stop="$dispatch('open-file-modal', { files: @js($cachedFiles[$item->id] ?? []) })" class="text-xs text-center font-semibold rounded-full bg-green-100 text-green-800 hover:bg-green-200 px-2.5 py-1">Terisi</button>
+                                                                            @else
+                                                                                <span class="text-xs text-center font-semibold rounded-full px-2.5 py-1 bg-red-100 text-red-800">Kosong</span>
+                                                                            @endif
+                                                                        </div>
+
+                                                                        {{-- Status Pemeriksa (Checkbox) --}}
+                                                                        <div @click.stop class="flex-shrink-0"> {{-- @click.stop agar akordeon tidak toggle saat checkbox diklik --}}
+                                                                            <label for="checker-{{ $item->id }}" class="flex items-center cursor-pointer">
+                                                                                <input type="checkbox" id="checker-{{ $item->id }}" wire:model.live="statusPemeriksa.{{ $item->id }}" class="form-checkbox h-5 w-5 rounded-full cursor-pointer transition duration-150 ease-in-out" x-bind:class="{ 'text-green-600': $wire.statusPemeriksa[{{ $item->id }}], 'text-red-600': !$wire.statusPemeriksa[{{ $item->id }}] }">
+                                                                                <span class="ml-2 font-medium text-xs transition-colors duration-200" x-bind:class="{ 'text-green-800 bg-green-100 rounded-full px-2 py-0.5': $wire.statusPemeriksa[{{ $item->id }}], 'text-red-800 bg-red-100 rounded-full px-2 py-0.5': !$wire.statusPemeriksa[{{ $item->id }}] }">
+                                                                                    <span x-text="$wire.statusPemeriksa[{{ $item->id }}] ? 'Lengkap' : 'Belum'"></span>
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
 
-                                                                    
-                                                                    {{-- Status Badge --}}
-                                                                    <div class="justify-between items-center mx-auto col-span-3">
-                                                                        @if ($item->status == 'Terisi')
-                                                                        <button 
-                                                                            @click.prevent.stop="$dispatch('open-file-modal', { files: @js($cachedFiles[$item->id] ?? []) })"
-                                                                            class="justify-between items-center text-xs text-center leading-5 font-semibold rounded-full bg-green-100 text-green-800 hover:bg-green-200 focus:outline-none w-4/5">
-                                                                            Terisi
-                                                                        </button>
-                                                                        @else
-                                                                            <span class="justify-between items-center text-xs text-center leading-5 font-semibold rounded-full px-2 py-0.5 bg-red-100 text-red-800 w-4/5">
-                                                                                Kosong
-                                                                            </span>
-                                                                        @endif
+                                                                    {{-- 2. Ikon panah (chevron) sekarang ada di sini --}}
+                                                                    <div class="flex-shrink-0">
+                                                                        <svg class="w-5 h-5 transform transition-transform text-gray-500" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                                                     </div>
 
-                                                                    {{-- Kolom Status Pemeriksa (Checkbox) --}}
-                                                                    <div class="items-center justify-center col-span-5">
-                                                                        <label for="checker-{{ $item->id }}" class="flex items-center cursor-pointer">
-                                                                            <input 
-                                                                                type="checkbox" 
-                                                                                id="checker-{{ $item->id }}" 
-                                                                                wire:model.live="statusPemeriksa.{{ $item->id }}"
-                                                                                class="form-checkbox h-5 w-5 rounded-full cursor-pointer transition duration-150 ease-in-out"
-                                                                                x-bind:class="{ 'text-green-600': $wire.statusPemeriksa[{{ $item->id }}], 'text-red-600': !$wire.statusPemeriksa[{{ $item->id }}] }"
-                                                                            >
-                                                                            <span
-                                                                                class="ml-2 font-medium text-xs transition-colors duration-200"
-                                                                                x-bind:class="{
-                                                                                    'text-green-800 bg-green-100 rounded-full px-2 py-0.5': $wire.statusPemeriksa[{{ $item->id }}],
-                                                                                    'text-red-800 bg-red-100 rounded-full px-2 py-0.5': !$wire.statusPemeriksa[{{ $item->id }}]
-                                                                                }"
-                                                                            >
-                                                                                <span x-text="$wire.statusPemeriksa[{{ $item->id }}] ? 'Sudah Lengkap' : 'Belum Lengkap'"></span>
-                                                                            </span>
-                                                                        </label>
-                                                                    </div>
-                                                                    
-                                                                    {{-- Kebab Menu untuk Aksi Lainnya --}}
-                                                                        <div x-data="{ open: false }" class="relative col-span-2">
-                                                                            {{-- Tombol Pemicu Kebab Menu --}}
-                                                                            <button @click="open = !open" @click.away="open = false" class="items-center justify-center p-1.5 rounded-full hover:bg-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                                                <svg class="h-5 w-5" xmlns="http://www.w.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                                                    <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
-                                                                                </svg>
-                                                                            </button>
+                                                                </div>
+                                                                {{-- ============================ AKHIR PERUBAHAN ============================ --}}
 
-                                                                            {{-- Panel Dropdown Aksi --}}
-                                                                            <div 
-                                                                                x-show="open" 
-                                                                                x-transition 
-                                                                                class="absolute right-0 z-[9999] mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                                                                                style="display: none;"
-                                                                                x-cloak
-                                                                                >
-                                                                                <div class="py-1" role="menu" aria-orientation="vertical">
-                                                                                    @if($item->google_drive_folder_id)
-                                                                                        <a href="https://drive.google.com/drive/folders/{{ $item->google_drive_folder_id }}" target="_blank" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Buka Google Drive</a>
-                                                                                        <button wire:click="copyLink('{{ $item->google_drive_folder_id }}')" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Copy Link</button>
-                                                                                        @script
-                                                                                            <script>
-                                                                                                $wire.on('copy-to-clipboard', ({ text }) => {
-                                                                                                    // Cek apakah Clipboard API didukung
-                                                                                                    if (navigator.clipboard) {
-                                                                                                        navigator.clipboard.writeText(text).then(() => {
-                                                                                                            console.log('Tautan berhasil disalin menggunakan Clipboard API!');
-                                                                                                        }).catch(err => {
-                                                                                                            console.error('Gagal menyalin:', err);
-                                                                                                        });
-                                                                                                    } else {
-                                                                                                        // Jika tidak didukung, gunakan fallback (metode lama)
-                                                                                                        const textArea = document.createElement("textarea");
-                                                                                                        textArea.value = text;
-                                                                                                        textArea.style.position = "fixed";  // Hindari scroll
-                                                                                                        textArea.style.top = "0";
-                                                                                                        textArea.style.left = "-9999px"; // Posisikan di luar layar
-                                                                                                        document.body.appendChild(textArea);
-                                                                                                        textArea.focus();
-                                                                                                        textArea.select();
-                                                                                                        
-                                                                                                        try {
-                                                                                                            const successful = document.execCommand('copy');
-                                                                                                            if (successful) {
-                                                                                                                console.log('Tautan berhasil disalin menggunakan document.execCommand!');
-                                                                                                            } else {
-                                                                                                                console.error('Gagal menyalin menggunakan fallback.');
-                                                                                                            }
-                                                                                                        } catch (err) {
-                                                                                                            console.error('Gagal menyalin:', err);
-                                                                                                        }
-                                                                                                        
-                                                                                                        document.body.removeChild(textArea);
-                                                                                                    }
-                                                                                                });
-                                                                                            </script>
-                                                                                            @endscript
-                                                                                    @endif
-                                                                                    {{-- Tombol untuk Rencana Aksi --}}
-                                                                                    <button wire:click="editRencanaAksi({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->rencana_aksi ? 'font-bold' : '' }}" role="menuitem">
-                                                                                        {{ $item->rencana_aksi ? 'Rencana Aksi (Edit)' : '+ Rencana Aksi' }}
+                                                                {{-- Konten Akordeon Detail --}}
+                                                                <div x-show="open" x-transition class="mt-2 pl-4 pr-2 space-y-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                                                    @if ($item->google_drive_folder_id)
+                                                                        <div class="pb-2 border-b">
+                                                                            <label class="block text-sm font-medium text-gray-700 mb-2">Bukti Dukung (Google Drive)</label>
+                                                                            <div class="flex justify-between items-center bg-white p-2 border rounded-md">
+                                                                                <span class="text-sm text-gray-600 truncate pr-2">Folder telah dibuat</span>
+                                                                                <div class="flex items-center space-x-2 flex-shrink-0">
+                                                                                    <button wire:click="copyLink('{{ $item->google_drive_folder_id }}')" title="Copy Link" class="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                                                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 4.625-2.25-2.25m0 0-2.25 2.25M15.75 12l2.25-2.25" /></svg>
                                                                                     </button>
-                                                                                    {{-- Tombol untuk Kendala --}}
-                                                                                    <button wire:click="editKendala({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->kendala ? 'font-bold' : '' }}" role="menuitem">
-                                                                                        {{ $item->kendala ? 'Catatan Petugas (Edit)' : '+ Catatan Petugas' }}
-                                                                                    </button>
-                                                                                    {{-- Tombol untuk Catatan Pemeriksa --}}
-                                                                                    <button wire:click="editCatatanPemeriksa({{ $item->id }})" @click.stop="open = false" class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 {{ $item->catatan_pemeriksa ? 'font-bold' : '' }}" role="menuitem">
-                                                                                        {{ $item->catatan_pemeriksa ? 'Catatan Pemeriksa (Edit)' : '+ Catatan Pemeriksa' }}
-                                                                                    </button>
+                                                                                    <a href="https://drive.google.com/drive/folders/{{ $item->google_drive_folder_id }}" target="_blank" title="Buka di Tab Baru" class="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                                                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                                                                                    </a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-
+                                                                    @endif
                                                                     <div>
-                                                                    </div>  
+                                                                        <label for="rencana-aksi-{{ $item->id }}" class="block text-sm font-medium text-gray-700 mb-1">Rencana Aksi</label>
+                                                                        <textarea wire:model.defer="texts.{{ $item->id }}.rencana_aksi" id="rencana-aksi-{{ $item->id }}" rows="4" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Tuliskan rencana aksi di sini..."></textarea>
+                                                                    </div>
+                                                                    <div>
+                                                                        <label for="kendala-{{ $item->id }}" class="block text-sm font-medium text-gray-700 mb-1">Catatan Petugas</label>
+                                                                        <textarea wire:model.defer="texts.{{ $item->id }}.kendala" id="kendala-{{ $item->id }}" rows="4" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Tuliskan kendala atau catatan dari petugas..."></textarea>
+                                                                    </div>
+                                                                    <div>
+                                                                        <label for="catatan-pemeriksa-{{ $item->id }}" class="block text-sm font-medium text-gray-700 mb-1">Catatan Pemeriksa</label>
+                                                                        <textarea wire:model.defer="texts.{{ $item->id }}.catatan_pemeriksa" id="catatan-pemeriksa-{{ $item->id }}" rows="4" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Tuliskan catatan dari pemeriksa..."></textarea>
+                                                                    </div>
+                                                                    <div class="flex justify-end items-center pt-2">
+                                                                        <button type="button" wire:click="saveDetails({{ $item->id }})" wire:loading.attr="disabled" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
+                                                                            <svg wire:loading wire:target="saveDetails({{ $item->id }})" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                                                            <span>Simpan Semua Catatan</span>
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         @endforeach
