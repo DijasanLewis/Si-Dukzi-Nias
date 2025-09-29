@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\TargetMingguan;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use App\Models\ZIChecklist; 
 
 class PilarMonitoring extends Component
 {
@@ -26,6 +27,37 @@ class PilarMonitoring extends Component
         $this->months = range(1, 12);
         $this->selectedYear = now()->year;
         $this->selectedMonth = now()->month;
+
+        // Untuk membuka dropdown secara default
+        $this->initializeExpandedRows();
+    }
+
+    /**
+     * Fungsi untuk mengisi state expandedRows agar 3 level pertama terbuka.
+     */
+    public function initializeExpandedRows(): void
+    {
+        // Ambil semua kombinasi unik dari 3 level pertama, diurutkan dengan benar.
+        $hierarchies = ZIChecklist::select('aspek', 'area', 'pilar')
+            ->distinct()
+            ->orderBy('aspek')
+            ->orderBy('area')
+            ->orderBy('pilar')
+            ->get();
+
+        $keysToExpand = [];
+        foreach ($hierarchies as $row) {
+            $key1 = $row->aspek;
+            $key2 = $key1 . '|' . $row->area;
+            $key3 = $key2 . '|' . $row->pilar;
+            
+            // Tambahkan semua level ke dalam array
+            if (!in_array($key1, $keysToExpand)) $keysToExpand[] = $key1;
+            if (!in_array($key2, $keysToExpand)) $keysToExpand[] = $key2;
+            if (!in_array($key3, $keysToExpand)) $keysToExpand[] = $key3;
+        }
+
+        $this->expandedRows = $keysToExpand;
     }
 
     public function toggleRow(string $key)
@@ -55,14 +87,17 @@ class PilarMonitoring extends Component
         $rawData = TargetMingguan::join('z_i_checklists', 'target_mingguan.pertanyaan_id', '=', 'z_i_checklists.id')
             ->where('target_mingguan.tahun', $this->selectedYear)
             ->where('target_mingguan.bulan', $this->selectedMonth)
-            ->whereIn('target_mingguan.status', [0, 1]) // Hanya yang punya target
+            ->whereIn('target_mingguan.status', [0, 1])
             ->select(
-                'z_i_checklists.aspek', 'z_i_checklists.area', 'z_i_checklists.pilar', 'z_i_checklists.sub_pilar',
-                'target_mingguan.minggu',
+                'z_i_checklists.aspek', 'z_i_checklists.area', 'z_i_checklists.pilar', 'z_i_checklists.sub_pilar', 'target_mingguan.minggu',
                 DB::raw('COUNT(target_mingguan.id) as total_target'),
                 DB::raw('SUM(CASE WHEN target_mingguan.status = 1 THEN 1 ELSE 0 END) as tercapai')
             )
             ->groupBy('aspek', 'area', 'pilar', 'sub_pilar', 'minggu')
+            ->orderBy('z_i_checklists.aspek') // Mengurutkan hasil akhir
+            ->orderBy('z_i_checklists.area')
+            ->orderBy('z_i_checklists.pilar')
+            ->orderBy('z_i_checklists.sub_pilar')
             ->get();
             
         // 2. Transformasi data menjadi struktur hierarki

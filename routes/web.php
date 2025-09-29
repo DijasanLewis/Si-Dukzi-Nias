@@ -7,6 +7,7 @@ use App\Http\Controllers\ZIController;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\PclMonitoring;
 use App\Livewire\PilarMonitoring;
+use App\Livewire\TargetPlanner;
 
 // Jadikan halaman monitoring sebagai halaman utama (root)
 Route::get('/', PclMonitoring::class)->name('home');
@@ -20,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
     
     Route::get('/monitoring/pilar', PilarMonitoring::class)->name('monitoring.pilar');
+    Route::get('/perencanaan-target', TargetPlanner::class)->name('target.planner');
+
 
 
     // Grup untuk Halaman Admin
