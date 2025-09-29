@@ -38,11 +38,10 @@ class PilarMonitoring extends Component
     public function initializeExpandedRows(): void
     {
         // Ambil semua kombinasi unik dari 3 level pertama, diurutkan dengan benar.
-        $hierarchies = ZIChecklist::select('aspek', 'area', 'pilar')
+        $hierarchies = ZIChecklist::select('aspek', 'area')
             ->distinct()
             ->orderBy('aspek')
             ->orderBy('area')
-            ->orderBy('pilar')
             ->get();
 
         $keysToExpand = [];
@@ -54,7 +53,6 @@ class PilarMonitoring extends Component
             // Tambahkan semua level ke dalam array
             if (!in_array($key1, $keysToExpand)) $keysToExpand[] = $key1;
             if (!in_array($key2, $keysToExpand)) $keysToExpand[] = $key2;
-            if (!in_array($key3, $keysToExpand)) $keysToExpand[] = $key3;
         }
 
         $this->expandedRows = $keysToExpand;
