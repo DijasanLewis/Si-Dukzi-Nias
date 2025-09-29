@@ -56,6 +56,28 @@
         </div>
     </div>
 
+    <div class="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm">
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+            <h4 class="text-lg font-semibold text-gray-700 flex-shrink-0">Filter Target Mingguan</h4>
+            
+            <div class="w-full sm:w-auto">
+                <select wire:model.live="selectedYear" class="w-full form-select block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    @foreach($years as $year)
+                        <option value="{{ $year }}">{{ $year }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="w-full sm:w-auto">
+                <select wire:model.live="selectedMonth" class="w-full form-select block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    @foreach($months as $month)
+                        <option value="{{ $month }}">{{ \Carbon\Carbon::create()->month($month)->translatedFormat('F') }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
+
     {{-- FITUR PENCARIAN (Menggunakan Livewire) --}}
         <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
         
@@ -182,6 +204,32 @@
 
                                                                 {{-- Konten Akordeon Detail --}}
                                                                 <div x-show="open" x-transition class="mt-2 pl-4 pr-2 space-y-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                                                    <div class="pb-2 border-b" @click.stop> {{-- @click.stop mencegah akordeon tertutup --}}
+                                                                        <label class="block text-sm font-medium text-gray-700 mb-2">Target Mingguan</label>
+                                                                        <div class="grid grid-cols-4 gap-3 text-center">
+                                                                            @for ($minggu = 1; $minggu <= 4; $minggu++)
+                                                                                @php
+                                                                                    // Ambil status untuk item dan minggu ini, default ke null
+                                                                                    $status = $weeklyTargets[$item->id][$minggu] ?? null;
+                                                                                    
+                                                                                    $colorClass = match($status) {
+                                                                                        0 => 'bg-yellow-300 hover:bg-yellow-400 border-yellow-400',
+                                                                                        1 => 'bg-green-400 hover:bg-green-500 border-green-500',
+                                                                                        default => 'bg-white hover:bg-gray-200 border-gray-300',
+                                                                                    };
+                                                                                @endphp
+                                                                                <div 
+                                                                                    wire:click="toggleWeeklyTarget({{ $item->id }}, {{ $minggu }})"
+                                                                                    wire:loading.class="opacity-50 cursor-wait"
+                                                                                    wire:target="toggleWeeklyTarget({{ $item->id }}, {{ $minggu }})"
+                                                                                    class="py-2 px-1 rounded-lg font-bold text-gray-700 text-sm border-2 shadow-sm cursor-pointer transition-colors duration-200 {{ $colorClass }}"
+                                                                                    title="Klik untuk mengubah status Minggu ke-{{ $minggu }}"
+                                                                                >
+                                                                                    M{{ $minggu }}
+                                                                                </div>
+                                                                            @endfor
+                                                                        </div>
+                                                                    </div>
                                                                     @if ($item->google_drive_folder_id)
                                                                         <div class="pb-2 border-b">
                                                                             <label class="block text-sm font-medium text-gray-700 mb-2">Bukti Dukung (Google Drive)</label>

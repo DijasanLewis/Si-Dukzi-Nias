@@ -20,6 +20,8 @@ use Exception;
 use HighSolutions\LaravelSearchy\Facades\Searchy;
 use Maatwebsite\Excel\Facades\Excel;
 use Livewire\WithPagination;
+use App\Models\TargetMingguan;
+use Illuminate\Support\Facades\DB;
 
 
 class DashboardChecklist extends Component
@@ -54,6 +56,13 @@ class DashboardChecklist extends Component
     public array $cachedFiles = [];
     public array $texts = [];
 
+    // Properti untuk Target Mingguan
+    public int $selectedYear;
+    public int $selectedMonth;
+    public array $years = [];
+    public array $months = [];
+    public array $weeklyTargets = [];
+
     public $initialDataLoaded = false;
     public function mount(): void
     {
@@ -71,6 +80,9 @@ class DashboardChecklist extends Component
                 'catatan_pemeriksa' => $item->catatan_pemeriksa,
             ];
         }
+        
+        // Inisialisasi untuk Fitur Target Mingguan
+        $this->initializeTargetFeature();
 
         // Muat cache saat komponen pertama kali dijalankan
         $this->refreshCachedFiles();
@@ -388,6 +400,69 @@ class DashboardChecklist extends Component
         }
     }
 
+    public function initializeTargetFeature(): void
+    {
+        $this->years = TargetMingguan::select('tahun')->distinct()->orderBy('tahun', 'desc')->pluck('tahun')->toArray();
+        if (empty($this->years)) {
+            $this->years = [now()->year];
+        }
+        $this->months = range(1, 12);
+        $this->selectedYear = now()->year;
+        $this->selectedMonth = now()->month;
+    }
+    
+    // Method baru untuk memuat data target mingguan berdasarkan tahun & bulan
+    public function loadWeeklyTargets(array $pertanyaanIds): void
+    {
+        if (empty($pertanyaanIds)) {
+            $this->weeklyTargets = [];
+            return;
+        }
+
+        $targets = TargetMingguan::where('tahun', $this->selectedYear)
+                                 ->where('bulan', $this->selectedMonth)
+                                 ->whereIn('pertanyaan_id', $pertanyaanIds)
+                                 ->get();
+
+        $this->weeklyTargets = [];
+        foreach ($targets as $target) {
+            $this->weeklyTargets[$target->pertanyaan_id][$target->minggu] = $target->status;
+        }
+    }
+
+    // Dipanggil saat dropdown filter tahun/bulan berubah
+    public function updatedSelectedYear(): void { $this->render(); }
+    public function updatedSelectedMonth(): void { $this->render(); }
+
+    // Method untuk mengubah status saat kotak minggu di-klik
+    public function toggleWeeklyTarget(int $pertanyaanId, int $minggu): void
+    {
+        $currentStatus = $this->weeklyTargets[$pertanyaanId][$minggu] ?? null;
+
+        $nextStatus = match ($currentStatus) {
+            null => 0,  // dari putih ke kuning
+            0 => 1,     // dari kuning ke hijau
+            1 => null,  // dari hijau ke putih
+            default => null,
+        };
+
+        // Update satu record spesifik di database
+        TargetMingguan::where('tahun', $this->selectedYear)
+                      ->where('bulan', $this->selectedMonth)
+                      ->where('minggu', $minggu)
+                      ->where('pertanyaan_id', $pertanyaanId)
+                      ->update(['status' => $nextStatus]);
+
+        // Langsung update state di komponen untuk reaktivitas instan
+        $this->weeklyTargets[$pertanyaanId][$minggu] = $nextStatus;
+
+        Notification::make()
+            ->title('Status Target Diperbarui')
+            ->body("Status untuk minggu ke-{$minggu} telah diubah.")
+            ->success()
+            ->send();
+    }
+
     public function render(): View
     {
         // 1. Mulai dengan query builder, bukan mengambil semua data langsung
@@ -416,6 +491,9 @@ class DashboardChecklist extends Component
 
         // 5. Ambil hasil setelah semua filter diterapkan
         $checklists = $query->get();
+
+        // Muat data target mingguan hanya untuk item yang ditampilkan
+        $this->loadWeeklyTargets($checklists->pluck('id')->toArray());
 
         // 6. Kembalikan view dengan data yang sudah difilter dan dikelompokkan
         return view('livewire.dashboard-checklist', [

@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ZIController;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\PclMonitoring;
+use App\Livewire\PilarMonitoring;
 
 // Jadikan halaman monitoring sebagai halaman utama (root)
 Route::get('/', PclMonitoring::class)->name('home');
@@ -17,6 +18,9 @@ Route::middleware('auth')->group(function () {
     
     // Halaman Monitoring
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
+    
+    Route::get('/monitoring/pilar', PilarMonitoring::class)->name('monitoring.pilar');
+
 
     // Grup untuk Halaman Admin
     // Route::middleware('admin')->group(function () { // 'admin' middleware bisa dibuat nanti
