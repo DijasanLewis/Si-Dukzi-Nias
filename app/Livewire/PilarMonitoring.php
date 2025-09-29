@@ -89,22 +89,23 @@ class PilarMonitoring extends Component
             ->where('target_mingguan.bulan', $this->selectedMonth)
             ->whereIn('target_mingguan.status', [0, 1])
             ->select(
-                'z_i_checklists.aspek', 'z_i_checklists.area', 'z_i_checklists.pilar', 'z_i_checklists.sub_pilar', 'target_mingguan.minggu',
+                'z_i_checklists.aspek', 'z_i_checklists.area', 'z_i_checklists.pilar', 'z_i_checklists.sub_pilar', 'z_i_checklists.pertanyaan', 'target_mingguan.minggu',
                 DB::raw('COUNT(target_mingguan.id) as total_target'),
                 DB::raw('SUM(CASE WHEN target_mingguan.status = 1 THEN 1 ELSE 0 END) as tercapai')
             )
-            ->groupBy('aspek', 'area', 'pilar', 'sub_pilar', 'minggu')
+            ->groupBy('aspek', 'area', 'pilar', 'sub_pilar', 'z_i_checklists.pertanyaan', 'minggu')
             ->orderBy('z_i_checklists.aspek') // Mengurutkan hasil akhir
             ->orderBy('z_i_checklists.area')
             ->orderBy('z_i_checklists.pilar')
             ->orderBy('z_i_checklists.sub_pilar')
+            ->orderBy('z_i_checklists.pertanyaan')
             ->get();
             
         // 2. Transformasi data menjadi struktur hierarki
         $hierarchy = [];
         
         foreach ($rawData as $item) {
-            $keys = [$item->aspek, $item->area, $item->pilar, $item->sub_pilar];
+            $keys = [$item->aspek, $item->area, $item->pilar, $item->sub_pilar, $item->pertanyaan];
             $currentLevel = &$hierarchy;
             
             foreach ($keys as $key) {

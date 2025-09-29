@@ -145,6 +145,7 @@ class TargetPlanner extends Component
         ->orderBy('area')
         ->orderBy('pilar')
         ->orderBy('sub_pilar')
+        ->orderBy('pertanyaan')
         ->get()
         ->groupBy(['aspek', 'area', 'pilar', 'sub_pilar']);
 
