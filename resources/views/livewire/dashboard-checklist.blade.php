@@ -1,6 +1,6 @@
 <div class="p-6 md:p-8 text-gray-900">
     {{-- Header Container --}}
-    <div class="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-6 pb-6 border-b border-gray-200 w-3/4 sm:w-full">
+    <div class="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-6 pb-6 border-b border-gray-200 w-full">
 
         {{-- Judul dan Sub-judul (Kiri di desktop, Tengah di mobile) --}}
         <div class="flex flex-col justify-between sm:justify-center sm:text-left w-full sm:w-2/3">
@@ -125,19 +125,17 @@
                                                         {{-- INI ADALAH PERULANGAN YANG MEMPERBAIKI ERROR --}}
                                                         @foreach ($pertanyaans as $item)
                                                             <div x-data="{ open: false }" class="border-b border-gray-200 last:border-b-0" wire:key="item-{{ $item->id }}">
-                                                                
-                                                                {{-- ============================ AWAL PERUBAHAN ============================ --}}
                                                                 {{-- 1. Seluruh baris ini sekarang menjadi tombol pemicu akordeon --}}
-                                                                <div @click="open = !open" class="flex flex-wrap flex-col sm:flex-row items-center justify-between gap-4 cursor-pointer hover:bg-gray-100 rounded-lg p-2 -m-2">
+                                                                <div @click="open = !open" class="flex flex-wrap flex-col sm:flex-row items-center justify-between gap-4 cursor-pointer hover:bg-gray-100 rounded-lg p-2 m-2">
                                                                     
                                                                     {{-- Teks Pertanyaan --}}
                                                                     <p class="text-gray-800 flex-1">{{ $item->pertanyaan }}</p>
                                                                     
                                                                     {{-- Kolom Aksi Cepat (disebelah kanan) --}}
-                                                                    <div class="flex items-center justify-end gap-3 flex-shrink-0 w-full sm:w-auto">
+                                                                    <div class="flex flex-wrap items-center justify-end gap-3 flex-shrink-0 w-full sm:w-1/4">
                                                                         
                                                                         {{-- Petugas --}}
-                                                                        <div @click.stop class="w-40"> {{-- @click.stop agar akordeon tidak toggle saat dropdown diklik --}}
+                                                                        <div @click.stop class="w-full"> {{-- @click.stop agar akordeon tidak toggle saat dropdown diklik --}}
                                                                             @if(auth()->user()->is_admin)
                                                                                 <select wire:model.live="assignedPetugas.{{ $item->id }}" class="block w-full text-sm border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out" title="Pilih Petugas">
                                                                                     <option value="">-- Assign Petugas --</option>
@@ -168,7 +166,7 @@
                                                                             <label for="checker-{{ $item->id }}" class="flex items-center cursor-pointer">
                                                                                 <input type="checkbox" id="checker-{{ $item->id }}" wire:model.live="statusPemeriksa.{{ $item->id }}" class="form-checkbox h-5 w-5 rounded-full cursor-pointer transition duration-150 ease-in-out" x-bind:class="{ 'text-green-600': $wire.statusPemeriksa[{{ $item->id }}], 'text-red-600': !$wire.statusPemeriksa[{{ $item->id }}] }">
                                                                                 <span class="ml-2 font-medium text-xs transition-colors duration-200" x-bind:class="{ 'text-green-800 bg-green-100 rounded-full px-2 py-0.5': $wire.statusPemeriksa[{{ $item->id }}], 'text-red-800 bg-red-100 rounded-full px-2 py-0.5': !$wire.statusPemeriksa[{{ $item->id }}] }">
-                                                                                    <span x-text="$wire.statusPemeriksa[{{ $item->id }}] ? 'Lengkap' : 'Belum'"></span>
+                                                                                    <span x-text="$wire.statusPemeriksa[{{ $item->id }}] ? 'Lengkap' : 'Belum Lengap'"></span>
                                                                                 </span>
                                                                             </label>
                                                                         </div>
@@ -188,7 +186,9 @@
                                                                         <div class="pb-2 border-b">
                                                                             <label class="block text-sm font-medium text-gray-700 mb-2">Bukti Dukung (Google Drive)</label>
                                                                             <div class="flex justify-between items-center bg-white p-2 border rounded-md">
-                                                                                <span class="text-sm text-gray-600 truncate pr-2">Folder telah dibuat</span>
+                                                                                <span class="text-sm text-blue-600 truncate pr-2" title="https://drive.google.com/drive/folders/{{ $item->google_drive_folder_id }}">
+                                                                                    https://drive.google.com/drive/u/0/folders/{{ $item->google_drive_folder_id }}
+                                                                                </span>
                                                                                 <div class="flex items-center space-x-2 flex-shrink-0">
                                                                                     <button wire:click="copyLink('{{ $item->google_drive_folder_id }}')" title="Copy Link" class="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-400">
                                                                                         <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 4.625-2.25-2.25m0 0-2.25 2.25M15.75 12l2.25-2.25" /></svg>
