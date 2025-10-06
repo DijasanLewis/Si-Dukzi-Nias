@@ -14,10 +14,10 @@
                 <a href="{{ route('home') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                     Halaman Monitoring Petugas
                 </a>
-                <a href="http://s.bps.go.id/siga" target="_blank" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                <a href="https://sites.google.com/view/bps1201/zona-integritas/rencana-kinerja-zi" target="_blank" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                     SIGA
                 </a>
-                <a href="https://docs.google.com/spreadsheets/d/1Adk7V5fZgojxAJGkODQvUyxXgSmbIJzrDJ-VlUzpKQk/edit?usp=sharing" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                <a href="https://docs.google.com/spreadsheets/d/1Adk7V5fZgojxAJGkODQvUyxXgSmbIJzrDJ-VlUzpKQk/edit?usp=sharing" target="_blank" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                     Rencana Kerja ZI 2025
                 </a>
             </div>

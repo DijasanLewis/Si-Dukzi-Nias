@@ -7,7 +7,7 @@
             <h3 class="text-2xl font-bold text-gray-800 w-full text-center sm:text-left">Pembangunan Zona Integritas</h3>
             <p class="text-gray-500 mt-1 w-full text-center sm:text-left">BPS Kabupaten Nias</p>
             
-            <a href="https://docs.google.com/spreadsheets/d/1Adk7V5fZgojxAJGkODQvUyxXgSmbIJzrDJ-VlUzpKQk/edit?usp=sharing" class="flex w-full">
+            <a href="https://docs.google.com/spreadsheets/d/1Adk7V5fZgojxAJGkODQvUyxXgSmbIJzrDJ-VlUzpKQk/edit?usp=sharing" target="_blank" class="flex w-full">
                 <button type="button"
                     class="w-full sm:w-auto flex justify-center items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-lg transition duration-300 text-base shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-wait">
                     <span>Sheet Rencana Kerja ZI</span>
@@ -188,7 +188,7 @@
                                                                             <label for="checker-{{ $item->id }}" class="flex items-center cursor-pointer">
                                                                                 <input type="checkbox" id="checker-{{ $item->id }}" wire:model.live="statusPemeriksa.{{ $item->id }}" class="form-checkbox h-5 w-5 rounded-full cursor-pointer transition duration-150 ease-in-out" x-bind:class="{ 'text-green-600': $wire.statusPemeriksa[{{ $item->id }}], 'text-red-600': !$wire.statusPemeriksa[{{ $item->id }}] }">
                                                                                 <span class="ml-2 font-medium text-xs transition-colors duration-200" x-bind:class="{ 'text-green-800 bg-green-100 rounded-full px-2 py-0.5': $wire.statusPemeriksa[{{ $item->id }}], 'text-red-800 bg-red-100 rounded-full px-2 py-0.5': !$wire.statusPemeriksa[{{ $item->id }}] }">
-                                                                                    <span x-text="$wire.statusPemeriksa[{{ $item->id }}] ? 'Lengkap' : 'Belum Lengap'"></span>
+                                                                                    <span x-text="$wire.statusPemeriksa[{{ $item->id }}] ? 'Lengkap' : 'Belum Lengkap'"></span>
                                                                                 </span>
                                                                             </label>
                                                                         </div>
